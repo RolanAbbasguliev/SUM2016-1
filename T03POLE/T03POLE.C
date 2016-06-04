@@ -1,6 +1,6 @@
-/* FILE NAME: T02EYES.C
+/* FILE NAME: T03POLE.C
  * PROGRAMMER: MM3
- * DATE: 02.06.2016
+ * DATE: 04.06.2016
  * PURPOSE: WinAPI windowed application sample.
  */
 
@@ -14,6 +14,49 @@
 
 /* Forward references */
 LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam );
+
+VOID Draw( HDC hDC, HWND hWnd, INT X, INT Y );
+
+VOID FlipFullScreen( HWND hWnd )
+{
+  static BOOL IsFullScreen = FALSE;
+  static RECT SaveRect;
+
+  if (IsFullScreen)
+  {
+    /* restore window size */
+    SetWindowPos(hWnd, HWND_TOP,
+      SaveRect.left, SaveRect.top,
+      SaveRect.right - SaveRect.left, SaveRect.bottom - SaveRect.top,
+      SWP_NOOWNERZORDER);
+  }
+  else
+  {
+    /* Set full screen size to window */
+    HMONITOR hmon;
+    MONITORINFOEX moninfo;
+    RECT rc;
+
+    /* Store window old size */
+    GetWindowRect(hWnd, &SaveRect);
+
+    /* Get nearest monitor */
+    hmon = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
+
+    /* Obtain monitor info */
+    moninfo.cbSize = sizeof(moninfo);
+    GetMonitorInfo(hmon, (MONITORINFO *)&moninfo);
+
+    /* Set window new size */
+    rc = moninfo.rcMonitor;
+    AdjustWindowRect(&rc, GetWindowLong(hWnd, GWL_STYLE), FALSE);
+
+    SetWindowPos(hWnd, HWND_TOPMOST,
+      rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top,
+      SWP_NOOWNERZORDER);
+  }
+  IsFullScreen = !IsFullScreen;
+} /* End of 'FlipFullScreen' function */
 
 /* The main program function */
 INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
@@ -68,7 +111,8 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 /* Window message handle function */
 LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
 {
-  INT i;
+  SYSTEMTIME st;
+  INT i, j;
   HDC hDC;
   PAINTSTRUCT ps;
   static INT w, h;
@@ -89,6 +133,12 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     SelectObject(hMemDCLogo, hBmLogo);
     ReleaseDC(hWnd, hDC);
     return 0;
+  case WM_KEYDOWN:
+    if (LOWORD(wParam) == 'F')
+      FlipFullScreen(hWnd);
+    if (LOWORD(wParam) == VK_ESCAPE)
+      SendMessage(hWnd, WM_DESTROY, 0, 0);
+    return 0;
   case WM_SIZE:
     w = LOWORD(lParam);
     h = HIWORD(lParam);
@@ -100,16 +150,23 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     SelectObject(hMemDC, hBm);
     SendMessage(hWnd, WM_TIMER, 0, 0);
     return 0;
+  case WM_ERASEBKGND:
+    return 0;
   case WM_TIMER:
     Rectangle(hMemDC, 0, 0, w + 1, h + 1);
     BitBlt(hMemDC, 0, 0, bm.bmWidth, bm.bmHeight,
       hMemDCLogo, 0, 0, SRCCOPY);
     srand(59);
-    for (i = 0; i < 30; i++)
-      DrawEye(hWnd, hMemDC, 30 + rand() % 800, 30 + rand() % 700, 30, 8);
+    for (i = 0; i < 50; i++)
+    {
+      for (j = 0; j < 50; j++)
+      {
+        Draw(hMemDC, hWnd, 100 + 15 * j, 100 + 15 * i);
+      }
+    }
     SetBkMode(hMemDC, TRANSPARENT);
     SetTextColor(hMemDC, RGB(255, 0, 0));
-    TextOut(hMemDC, 30, 30, "30!", 3);
+    TextOut(hMemDC, 30, 30, "Pole", 4);
     InvalidateRect(hWnd, NULL, FALSE);
     return 0;
   case WM_PAINT:
@@ -126,4 +183,50 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 } /* End of 'MyWinFunc' function */
-/* END OF 'T02EYES.C' FILE */
+
+VOID Draw( HDC hDC, HWND hWnd, INT X, INT Y )
+{
+  INT i;
+  DOUBLE si, co;
+  POINT pt;
+  static POINT pts[] =
+  {
+    {0, -20}, {40, 0}, {0, 20}
+  };
+  static POINT pts1[] =
+  {
+    {0, 20}, {-40, 0}, {0, -20}
+  };
+  POINT pt1[sizeof(pts) / sizeof(pts[0])];
+  POINT pt2[sizeof(pts1) / sizeof(pts1[0])];
+
+  GetCursorPos(&pt);
+  ScreenToClient(hWnd, &pt);
+
+  si = (Y - pt.y) / sqrt((pt.x - X) * (pt.x - X) + (Y - pt.y) * (Y - pt.y));
+  co = (pt.x - X) / sqrt((pt.x - X) * (pt.x - X) + (Y - pt.y) * (Y - pt.y));
+
+  for (i = 0; i < sizeof(pts) / sizeof(pts[0]); i++)
+  {
+    pt1[i].x = X + pts[i].x * co - pts[i].y * si;
+    pt1[i].y = Y - (pts[i].x * si + pts[i].y * co);
+    pt2[i].x = X + pts1[i].x * co - pts1[i].y * si;
+    pt2[i].y = Y - (pts1[i].x * si + pts1[i].y * co);
+  }
+  SelectObject(hDC, GetStockObject(DC_PEN));
+  SelectObject(hDC, GetStockObject(DC_BRUSH));
+  
+  srand(clock() / 1000);
+  
+  SetDCPenColor(hDC, RGB(rand() % 256, rand() % 256, rand() % 256));
+  SetDCBrushColor(hDC, RGB(rand() % 256, rand() % 256, rand() % 256));
+  Polygon(hDC, pt1, sizeof(pts) / sizeof(pts[0]));
+
+  SetDCPenColor(hDC, RGB(rand() % 256, rand() % 256, rand() % 256));
+  SetDCBrushColor(hDC, RGB(rand() % 256, rand() % 256, rand() % 256));
+  Polygon(hDC, pt2, sizeof(pts1) / sizeof(pts1[0]));
+  
+  SetDCPenColor(hDC, RGB(255, 255, 255));
+  SetDCBrushColor(hDC, RGB(255, 255, 255));
+} /* End of 'Draw' function */
+/* END OF 'T03POLE.C' FILE */
