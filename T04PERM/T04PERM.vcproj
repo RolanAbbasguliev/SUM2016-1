@@ -3,7 +3,7 @@
 	ProjectType="Visual C++"
 	Version="9,00"
 	Name="T04PERM"
-	ProjectGUID="{47F2AD1C-BF64-4D33-A3F6-17FA44BFEE57}"
+	ProjectGUID="{3F8A606A-81DA-4866-B600-73F2BB390CF7}"
 	RootNamespace="T04PERM"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"

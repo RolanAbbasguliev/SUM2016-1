@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 10.00
 # Visual Studio 2008
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "T04PERM", "T04PERM.vcproj", "{47F2AD1C-BF64-4D33-A3F6-17FA44BFEE57}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "T04PERM", "T04PERM.vcproj", "{3F8A606A-81DA-4866-B600-73F2BB390CF7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,10 +9,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{47F2AD1C-BF64-4D33-A3F6-17FA44BFEE57}.Debug|Win32.ActiveCfg = Debug|Win32
-		{47F2AD1C-BF64-4D33-A3F6-17FA44BFEE57}.Debug|Win32.Build.0 = Debug|Win32
-		{47F2AD1C-BF64-4D33-A3F6-17FA44BFEE57}.Release|Win32.ActiveCfg = Release|Win32
-		{47F2AD1C-BF64-4D33-A3F6-17FA44BFEE57}.Release|Win32.Build.0 = Release|Win32
+		{3F8A606A-81DA-4866-B600-73F2BB390CF7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{3F8A606A-81DA-4866-B600-73F2BB390CF7}.Debug|Win32.Build.0 = Debug|Win32
+		{3F8A606A-81DA-4866-B600-73F2BB390CF7}.Release|Win32.ActiveCfg = Release|Win32
+		{3F8A606A-81DA-4866-B600-73F2BB390CF7}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

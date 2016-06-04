@@ -6,29 +6,17 @@
 #include <stdio.h>
 
 #define N 7
-int P[N];
+int P[N], Parity = 0;
 
 void SavePerm( void );
 void Go( int Pos );
 void Swap( int *A, int *B );
-int Parity( void );
 
-int Parity( void )
-{
-  int i, j, sum = 0;
-
-  for (i = 0; i < N; i++)
-    for (j = 0; j < N; j++)
-      if (P[i] > P[i + j])
-        sum++;
-  if (sum % 2 == 0)
-    return 0;
-  else
-    return 1;
-}
 void Swap( int *A, int *B )
 {
   int tmp = *A;
+
+  Parity = !Parity;
 
   *A = *B;
   *B = tmp;
@@ -65,7 +53,7 @@ void SavePerm( void )
   for (i = 0; i < N - 1; i++)
     fprintf(F, "%2i, ", P[i]);
   fprintf(F, "%2i", P[N - 1]);
-  if (Parity())
+  if (Parity)
     fprintf(F, " - even\n");
   else 
     fprintf(F, " - odd\n");
