@@ -4,21 +4,46 @@
  * PURPOSE: WinAPI windowed application sample.
  */
 #include <stdio.h>
+#include <conio.h>
 
 #define N 7
-#define MAX 4
+#define MAX 3
 
 int P[N], Parity = 0;
-double A[MAX][MAX], sum = 0;
+double A[MAX][MAX], sum;
 
 void SavePerm( void );
 void Go( int Pos );
 void Swap( int *A, int *B );
 void LoadMatrix( char *FileName );
+double EvalDeterminant( char *FileName );
+
+double EvalDeterminant( char *FileName )
+{
+  int i;
+
+  LoadMatrix(FileName);
+  sum = 0;
+
+  for (i = 0; i < N; i++)
+    P[i] = i;
+  Go(0);
+  return sum;
+}
 
 void LoadMatrix( char *FileName )
 {
+  FILE *F;
+  int i, j, M;
 
+  F = fopen(FileName, "r");
+  if (F == NULL)
+    return;
+  fscanf(F, "%d", &M);
+  for (i = 0; i < M; i++)
+    for (j = 0; j < M; j++)
+      fscanf(F, "%lf", & A[i][j]);
+  fclose(F);
 } /* End of LoadMatrix func */
 
 void Swap( int *A, int *B )
@@ -34,7 +59,7 @@ void Swap( int *A, int *B )
 void Go( int Pos )
 {
   int i, x, SaveParity;
-  double prod = 0;
+  double prod = 1;
 
   if (Pos == N)
   {
@@ -47,42 +72,33 @@ void Go( int Pos )
     return;
   }    
   else
-  {  
+  {   
     x = P[0];
     Go(Pos + 1);
     SaveParity = Parity;
     for (i = Pos + 1; i < N; i++)
     {
-      Swap(&P[Pos], &P[i]);
-      Go(Pos + 1);
+      if(Pos != i)
+      {
+        Swap(&P[Pos], &P[i]);
+        Go(Pos + 1);
+      }
     }
     for (i = Pos + 1; i < N; i++)
       P[i - 1] = P[i];
     P[N - 1] = x;
-    Parity = SaveParity;
+    Parity = SaveParity;  
   } 
 } /* End of Go func*/
 
-double EvalDeterminant( char *FileName )
-{
-  int i;
-
-  LoadMatrix(FileName);
-  sum = 0;
-
-  for (i = 0; i < N; i++)
-    P[i] = i;
-  Go(0);
-  return sum;
-}
-
 void main( void )
 {
-  char fname[] =
+  char *fname[] =
   {
     "math1.txt"
   };
 
-  printf("%f", EvalDeterminant(fname));
+  printf("%f", EvalDeterminant(*fname));
+  _getch();
 } /* End of MAIN func */
 /* END OF T05DET */

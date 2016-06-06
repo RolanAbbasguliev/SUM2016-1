@@ -5,7 +5,7 @@
  */
 #include <stdio.h>
 
-#define N 7
+#define N 3
 int P[N], Parity = 0;
 
 void SavePerm( void );
@@ -20,9 +20,49 @@ void Swap( int *A, int *B )
 
   *A = *B;
   *B = tmp;
-}
+} /* End of Swap func*/
 
 void Go( int Pos )
+{
+  int i, x, SaveParity;
+  double prod = 1;
+
+  if (Pos == N)
+  {
+    SavePerm();
+    return;
+  }    
+  else
+  {   
+/*    Go(Pos + 1);
+    SaveParity = Parity;
+    x = P[0];
+    for (i = Pos + 1; i < N; i++)
+    {
+      if(Pos != i)
+      {
+        Swap(&P[Pos], &P[i]);
+        Go(Pos + 1);
+      }
+    }
+    for (i = Pos + 1; i < N; i++)
+      P[i - 1] = P[i];
+    P[N - 1] = x;
+    Parity = SaveParity;  */
+    SaveParity = Parity;
+    for (i = Pos; i < N; i++)
+    {
+      if (Pos != i)
+        Swap(&P[Pos], &P[i]);
+      Go(Pos + 1);
+      if (Pos != i)
+        Swap(&P[Pos], &P[i]);
+    }
+    Parity = SaveParity;
+  } 
+} /* End of Go func*/
+
+/*void Go( int Pos )
 {
   int i;
 
@@ -34,13 +74,14 @@ void Go( int Pos )
   else
   {  
     for (i = Pos; i < N; i++)
-    {      
+    {   
       Swap(&P[Pos], &P[i]);       
       Go(Pos + 1);
       Swap(&P[Pos], &P[i]);    
     }
   } 
-}
+}*/
+
 
 void SavePerm( void )
 {
@@ -54,11 +95,11 @@ void SavePerm( void )
     fprintf(F, "%2i, ", P[i]);
   fprintf(F, "%2i", P[N - 1]);
   if (Parity)
-    fprintf(F, " - even\n");
-  else 
     fprintf(F, " - odd\n");
+  else 
+    fprintf(F, " - even\n");
   fclose(F);  
-}
+} /* End of SavePerm func*/
 
 void main( void )
 {
@@ -68,4 +109,5 @@ void main( void )
     P[i] = i + 1;
 
   Go(0);
-}
+} /* End of MAIN func*/
+/* END OF T04PEPM.C */

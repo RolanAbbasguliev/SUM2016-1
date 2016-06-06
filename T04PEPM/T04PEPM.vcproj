@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9,00"
-	Name="T04PERM"
-	ProjectGUID="{3F8A606A-81DA-4866-B600-73F2BB390CF7}"
-	RootNamespace="T04PERM"
+	Name="T04PEPM"
+	ProjectGUID="{1191F75C-F3A0-462D-9AF1-476AC261314B}"
+	RootNamespace="T04PEPM"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="196613"
 	>
@@ -179,7 +179,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\T04PERM.C"
+				RelativePath=".\T04PEPM.C"
 				>
 			</File>
 		</Filter>
