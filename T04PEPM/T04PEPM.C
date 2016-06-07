@@ -5,7 +5,7 @@
  */
 #include <stdio.h>
 
-#define N 3
+#define N 5
 int P[N], Parity = 0;
 
 void SavePerm( void );

@@ -1,4 +1,4 @@
-/* FILE NAME: T05DET.C
+/* FILE nAME: T05DET.C
  * PROGRAMMER: MM3
  * DATE: 06.06.2016
  * PURPOSE: WinAPI windowed application sample.
@@ -6,37 +6,37 @@
 #include <stdio.h>
 #include <conio.h>
 
-#define N 7
+#define N 3
 #define MAX 3
-
+int n = 7;
 int P[N], Parity = 0;
 double A[MAX][MAX], sum;
 
 void SavePerm( void );
 void Go( int Pos );
 void Swap( int *A, int *B );
-void LoadMatrix( char *FileName );
-double EvalDeterminant( char *FileName );
+void LoadMatrix( char *Filename );
+double EvalDeterminant( char *Filename );
 
-double EvalDeterminant( char *FileName )
+double EvalDeterminant( char *Filename )
 {
   int i;
 
-  LoadMatrix(FileName);
+  LoadMatrix(Filename);
   sum = 0;
 
-  for (i = 0; i < N; i++)
+  for (i = 0; i < n; i++)
     P[i] = i;
   Go(0);
   return sum;
 }
 
-void LoadMatrix( char *FileName )
+void LoadMatrix( char *Filename )
 {
   FILE *F;
   int i, j, M;
 
-  F = fopen(FileName, "r");
+  F = fopen(Filename, "r");
   if (F == NULL)
     return;
   fscanf(F, "%d", &M);
@@ -61,22 +61,32 @@ void Go( int Pos )
   int i, x, SaveParity;
   double prod = 1;
 
-  if (Pos == N)
+  if (Pos == n)
   {
-    for (i = Pos; i < MAX; i++)
+    for (i = 0; i < n; i++)
       prod *= A[i][P[i]];
     if (Parity)
-      sum += prod;
-    else
       sum -= prod;
+    else
+      sum += prod;
     return;
   }    
   else
   {   
-    x = P[0];
+    SaveParity = Parity;
+    for (i = Pos; i < n; i++)
+    {
+      if (Pos != i)
+        Swap(&P[Pos], &P[i]);
+      Go(Pos + 1);
+      if (Pos != i)
+        Swap(&P[Pos], &P[i]);
+    }
+    Parity = SaveParity;
+/*    x = P[0];
     Go(Pos + 1);
     SaveParity = Parity;
-    for (i = Pos + 1; i < N; i++)
+    for (i = Pos + 1; i < n; i++)
     {
       if(Pos != i)
       {
@@ -84,10 +94,10 @@ void Go( int Pos )
         Go(Pos + 1);
       }
     }
-    for (i = Pos + 1; i < N; i++)
+    for (i = Pos + 1; i < n; i++)
       P[i - 1] = P[i];
-    P[N - 1] = x;
-    Parity = SaveParity;  
+    P[n - 1] = x;
+    Parity = SaveParity;    */
   } 
 } /* End of Go func*/
 
@@ -98,7 +108,7 @@ void main( void )
     "math1.txt"
   };
 
-  printf("%f", EvalDeterminant(*fname));
+  printf("Det = %f\n", EvalDeterminant(*fname));
   _getch();
 } /* End of MAIN func */
-/* END OF T05DET */
+/* EnD OF T05DET */
