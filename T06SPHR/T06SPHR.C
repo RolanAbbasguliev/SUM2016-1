@@ -120,7 +120,7 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
   {
   case WM_CREATE:
     SetTimer(hWnd, 30, 10, NULL);
-    hBmLogo = LoadImage(NULL, "GLOBE.BMP", IMAGE_BITMAP, 0, 0,
+    hBmLogo = LoadImage(NULL, "G.bmp", IMAGE_BITMAP, 0, 0,
         LR_LOADFROMFILE);
     GetObject(hBmLogo, sizeof(bm), &bm);
     hDC = GetDC(hWnd);

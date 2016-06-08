@@ -1,0 +1,7 @@
+/* FILE NAME: T07ANIM.C
+ * PROGRAMMER: MM3
+ * DATE: 08.06.2016
+ * PURPOSE: Animation.
+ */
+
+/* END OF T07ANIM.C */

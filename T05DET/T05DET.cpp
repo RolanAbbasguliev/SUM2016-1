@@ -6,11 +6,10 @@
 #include <stdio.h>
 #include <conio.h>
 
-#define N 3
 #define MAX 3
-int n = 7;
-int P[N], Parity = 0;
+
 double A[MAX][MAX], sum;
+int P[MAX], Parity = 0, N;
 
 void SavePerm( void );
 void Go( int Pos );
@@ -25,7 +24,7 @@ double EvalDeterminant( char *Filename )
   LoadMatrix(Filename);
   sum = 0;
 
-  for (i = 0; i < n; i++)
+  for (i = 0; i < N; i++)
     P[i] = i;
   Go(0);
   return sum;
@@ -34,15 +33,15 @@ double EvalDeterminant( char *Filename )
 void LoadMatrix( char *Filename )
 {
   FILE *F;
-  int i, j, M;
+  int i, j;
 
   F = fopen(Filename, "r");
   if (F == NULL)
     return;
-  fscanf(F, "%d", &M);
-  for (i = 0; i < M; i++)
-    for (j = 0; j < M; j++)
-      fscanf(F, "%lf", & A[i][j]);
+  fscanf(F, "%d", &N); 
+  for (i = 0; i < N; i++)
+    for (j = 0; j < N; j++)
+      fscanf(F, "%lf", &A[i][j]);
   fclose(F);
 } /* End of LoadMatrix func */
 
@@ -50,7 +49,7 @@ void Swap( int *A, int *B )
 {
   int tmp = *A;
 
-  Parity = !Parity;
+/*  Parity = !Parity;  */
 
   *A = *B;
   *B = tmp;
@@ -58,12 +57,13 @@ void Swap( int *A, int *B )
 
 void Go( int Pos )
 {
-  int i, x, SaveParity;
-  double prod = 1;
+  int i/*, SaveParity*/;
 
-  if (Pos == n)
+  if (Pos == N)
   {
-    for (i = 0; i < n; i++)
+    double prod = 1;
+
+    for (i = 0; i < N; i++)
       prod *= A[i][P[i]];
     if (Parity)
       sum -= prod;
@@ -73,8 +73,17 @@ void Go( int Pos )
   }    
   else
   {   
-    SaveParity = Parity;
-    for (i = Pos; i < n; i++)
+    Go(Pos + 1);
+    for (i = Pos + 1; i < N; i++)
+    {
+      Swap(&P[Pos], &P[i]);
+      Parity = !Parity;
+      Go(Pos + 1);
+      Swap(&P[Pos], &P[i]);
+      Parity = !Parity;
+    }
+/*    SaveParity = Parity;   
+    for (i = Pos; i < N; i++)
     {
       if (Pos != i)
         Swap(&P[Pos], &P[i]);
@@ -82,7 +91,7 @@ void Go( int Pos )
       if (Pos != i)
         Swap(&P[Pos], &P[i]);
     }
-    Parity = SaveParity;
+    Parity = SaveParity;    */
 /*    x = P[0];
     Go(Pos + 1);
     SaveParity = Parity;
@@ -105,7 +114,7 @@ void main( void )
 {
   char *fname[] =
   {
-    "math1.txt"
+    "mat1.txt"
   };
 
   printf("Det = %f\n", EvalDeterminant(*fname));
