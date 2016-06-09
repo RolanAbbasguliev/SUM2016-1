@@ -4,4 +4,6 @@
  * PURPOSE: Animation.
  */
 
+/*#include "vec.h"*/
+
 /* END OF T07ANIM.C */

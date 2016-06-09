@@ -41,11 +41,20 @@ __inline VEC VecAddVec( VEC A, VEC B )
   return VecSet(A.X + B.X, A.Y + B.Y, A.Z + B.Z);
 } /* End of 'VecAddVec' func */
 
-__inline VEC VecSubVec( VEC A, VEC B );
+__inline VEC VecSubVec( VEC A, VEC B )
+{
+  return VecSet(A.X - B.X, A.Y - B.Y, A.Z - B.Z);
+} /* End of 'VecSubVec' func */
 
-__inline VEC VecMulNum( VEC A, DBL N );
+__inline VEC VecMulNum( VEC A, DBL N )
+{
+  return VecSet(A.X * N, A.Y * N, A.Z * N);
+} /* End of 'VecMulNum' func */
 
-__inline VEC VecDivNum( VEC A, DBL N );
+__inline VEC VecDivNum( VEC A, DBL N )
+{
+  return VecSet(A.X / N, A.Y / N, A.Z / N);
+} /* End of 'VecDivNum' func */
 
 __inline VEC VecNeg( VEC A )
 {
@@ -55,13 +64,22 @@ __inline VEC VecNeg( VEC A )
 __inline DBL VecDotVec( VEC A, VEC B )
 {
   return A.X * B.X + A.Y * B.Y + A.Z * B.Z;
-}
+} /* End of 'VecDotVec' func */
 
-__inline VEC VecCrossVec( VEC A, VEC B );
+__inline VEC VecCrossVec( VEC A, VEC B )
+{
+  return VecSet(A.Y * B.Z - A.Z * B.Y, A.Y * B.X - A.X * B.Y, A.X * B.Z - A.Z * B.X);
+} /* End of 'VecCrossVec' func */
 
-__inline DBL VecLen2( VEC V );
+__inline DBL VecLen2( VEC V )
+{
+  return V.X * V.X + V.Y * V.Y + V.Z * V.Z;
+} /* End of 'VecLen2' func */
 
-__inline DBL VecLen( VEC V );
+__inline DBL VecLen( VEC V )
+{
+  return sqrt(V.X * V.X + V.Y * V.Y + V.Z * V.Z);
+} /* End of 'VecLen' func */
 
 __inline VEC VecNormalize( VEC V )
 {
@@ -70,7 +88,7 @@ __inline VEC VecNormalize( VEC V )
   if (len != 1 && len != 0)
     len = sqrt(len), V.X /= len, V.Y /= len, V.Z /= len;
   return V;
-}
+} /* End of '' func */
 
 __inline VEC VecDotVec( VEC A, VEC B )
 {
@@ -118,15 +136,68 @@ __inline MATR MatrTranslate( VEC D )
   return M;
 } /* End of 'MatrTranslate' func */
 
-__inline VEC V = PointTransform(VecSet(1, 2, 3), MatrTranslate(VecSet(4, 0, 0)));
+__inline MATR MatrScale( VEC S )
+{
+  MATR M =
+  {
+    {
+      {  S.X,  0,    0,  0},
+      {  0,  S.Y,    0,  0},
+      {  0,    0,  S.Z,  0},
+      {  0,    0,    0,  1},
+    }
+  };
 
-__inline MATR MatrScale( VEC S );
+  return M;
+} /* End of 'MatrScale' func */
 
-__inline MATR MatrRotateX( DBL AngleDegree );
+__inline MATR MatrRotateX( DBL AngleDegree )
+{
+  DBL Angle = D2R(AngleDegree), si = sin(Angle), co = cos(Angle);
+  MATR M =
+  {
+    {
+      {  1,    0,   0,  0},
+      {  0,   co,  si,  0},
+      {  0,  -si,  co,  0},
+      {  0,    0,   0,  1},
+    }
+  };
 
-__inline MATR MatrRotateY( DBL AngleDegree );
+  return M;
+} /* End of 'MatrRotateX' func */
 
-__inline MATR MatrRotateZ( DBL AngleDegree );
+__inline MATR MatrRotateY( DBL AngleDegree )
+{
+  DBL Angle = D2R(AngleDegree), si = sin(Angle), co = cos(Angle);
+  MATR M =
+  {
+    {
+      {  co,  0,  -si,  0},
+      {   0,  1,    0,  0},
+      {  si,  0,   co,  0},
+      {   0,  0,    0,  1},
+    }
+  };
+
+  return M;
+} /* End of 'MatrRotateY' func */
+
+__inline MATR MatrRotateZ( DBL AngleDegree )
+{
+  DBL Angle = D2R(AngleDegree), si = sin(Angle), co = cos(Angle);
+  MATR M =
+  {
+    {
+      {   co,  si,  0,  0},
+      {  -si,  co,  0,  0},
+      {    0,   0,  1,  0},
+      {    0,   0,  0,  1},
+    }
+  };
+
+  return M;
+} /* End of 'MatrRotateZ' func */
 
 __inline MATR MatrRotate( DBL AngleDegree, VEC R )
 {
@@ -171,7 +242,17 @@ __inline MATR MatrMulMatr( MATR M1, MATR M2 )
   return r;
 } /* End of 'MatrMulMatr' func */
 
-__inline MATR MatrTranspose( MATR M );
+__inline MATR MatrTranspose( MATR M )
+{
+  INT i, j;
+  MATR r;
+
+  for (i = 0; i < 4; i++)
+    for (j = 0; j < 4; j++)
+      r.A[i][j] = M.A[j][i];
+
+  return r;
+} /* End of 'MatrTranspose' func */
 
 __inline DBL MatrDeterm3x3( DBL A11, DBL A12, DBL A13,
                    DBL A21, DBL A22, DBL A23,

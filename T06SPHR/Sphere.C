@@ -8,8 +8,8 @@
 #include <windows.h>
 #include "sphere.h"
 
-#define M 100
-#define N 50
+#define M 300
+#define N 150
 
 #define PI 3.14159265358979323846
 
@@ -250,6 +250,7 @@ VOID DrawSphere( HDC hDC, INT Xc, INT Yc, INT R )
     {
       INT img_x, img_y;
       COLORREF c;
+      BYTE r, g, b;
 
       x = Xc + G[i][j].X;
       y = Yc - G[i][j].Z;
@@ -257,8 +258,14 @@ VOID DrawSphere( HDC hDC, INT Xc, INT Yc, INT R )
       img_x = j * (Globe.W - 1) / (M - 1);
       img_y = i * (Globe.H - 1) / (N - 1);
 
-      c = Globe.Bits[img_x + img_y * Globe.W]; /* GetPixel(Globe.hDC, img_x, img_y); */
-      SetPixelV(hDC, x, y, c);
+      c = Globe.Bits[img_y + img_x * Globe.W];
+      r = GetRValue(c);
+      g = GetGValue(c);
+      b = GetBValue(c);
+      c = RGB(b, g, r);
+
+      if (G[i][j].Y < 0)
+        SetPixelV(hDC, x, y, c);
     }
   }
 
