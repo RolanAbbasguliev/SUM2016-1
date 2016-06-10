@@ -4,84 +4,79 @@
  * PURPOSE: WinAPI windowed application sample.
  */
 
-#include <stdlib.h>
-#include <math.h>
-
 #include <windows.h>
+#include <math.h>
+#include <stdlib.h>
 
-/* Window class name */
-#define WND_CLASS_NAME "My Window Class"
+#pragma warning(disable: 4244)
 
-/* Forward references */
-LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam );
-
-VOID DrawEye(HWND hWnd, HDC hDC, INT X, INT Y, INT R, INT R1);
-
-/* The main program function */
-INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    CHAR *CmdLine, INT CmdShow )
+VOID FlipFullScreen( HWND hWnd )
 {
-  WNDCLASS wc;
-  HWND hWnd;
-  MSG msg;
+  static BOOL IsFullScreen = FALSE;
+  static RECT SaveRect;
 
-  /* Register window class */
-  wc.style = CS_HREDRAW | CS_VREDRAW;
-  wc.cbClsExtra = 0;
-  wc.cbWndExtra = 0;
-  wc.hCursor = LoadCursor(NULL, IDC_HAND);
-  wc.hIcon = LoadIcon(NULL, IDI_EXCLAMATION);
-  wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
-  wc.hInstance = hInstance;
-  wc.lpszClassName = WND_CLASS_NAME;
-  wc.lpszMenuName = NULL;
-  wc.lpfnWndProc = MyWinFunc;
-
-  if (!RegisterClass(&wc))
+  if (IsFullScreen)
   {
-    MessageBox(NULL, "Error register window class", "ERROR", MB_OK | MB_ICONERROR);
-    return 0;
+    /* restore window size */
+    SetWindowPos(hWnd, HWND_TOP,
+      SaveRect.left, SaveRect.top,
+      SaveRect.right - SaveRect.left, SaveRect.bottom - SaveRect.top,
+      SWP_NOOWNERZORDER);
   }
-
-  /* Create window */
-  hWnd = CreateWindow(WND_CLASS_NAME,
-    "Clock",
-    WS_OVERLAPPEDWINDOW,
-    CW_USEDEFAULT, CW_USEDEFAULT,
-    1000, 1900,
-    NULL, NULL, hInstance, NULL);
-  if (hWnd == NULL)
+  else
   {
-    MessageBox(NULL, "Create window erroe", "ERROR", MB_OK | MB_ICONERROR);
-    return 0;
+    /* Set full screen size to window */
+    HMONITOR hmon;
+    MONITORINFOEX moninfo;
+    RECT rc;
+
+    /* Store window old size */
+    GetWindowRect(hWnd, &SaveRect);
+
+    /* Get nearest monitor */
+    hmon = MonitorFromWindow(hWnd, MONITOR_DEFAULTTONEAREST);
+
+    /* Obtain monitor info */
+    moninfo.cbSize = sizeof(moninfo);
+    GetMonitorInfo(hmon, (MONITORINFO *)&moninfo);
+
+    /* Set window new size */
+    rc = moninfo.rcMonitor;
+    AdjustWindowRect(&rc, GetWindowLong(hWnd, GWL_STYLE), FALSE);
+
+    SetWindowPos(hWnd, HWND_TOPMOST,
+      rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top,
+      SWP_NOOWNERZORDER);
   }
+  IsFullScreen = !IsFullScreen;
+} /* End of 'FlipFullScreen' function */
 
-  /* Show window */
-  ShowWindow(hWnd, CmdShow);
-  UpdateWindow(hWnd);
+VOID PutLineTime( HDC hDC, INT X, INT Y, INT X1, INT Y1 )
+{
+  MoveToEx(hDC, X, Y, NULL); 
+  LineTo(hDC, X1, Y1);
+}/* End of 'PutLinetime' function */
 
-  /* Run message loop */
-  while (GetMessage(&msg, NULL, 0, 0))
-    DispatchMessage(&msg);
-
-  return 30;
-} /* End of 'WinMain' function */
-
-/* Window message handle function */
 LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
 {
+  INT x = 500, y = 500;
+  SYSTEMTIME st;
   HDC hDC;
+  HPEN hPen, hOldPen;
   PAINTSTRUCT ps;
   static INT w, h;
   static BITMAP bm;
   static HBITMAP hBm, hBmLogo;
   static HDC hMemDC, hMemDCLogo;
+  DOUBLE P = 3.14159265358979323846, t, si, co, r = 400;
 
-    switch (Msg)
+  GetLocalTime(&st);
+
+  switch (Msg)
   {
   case WM_CREATE:
     SetTimer(hWnd, 30, 10, NULL);
-    hBmLogo = LoadImage(NULL, "GLOBE.BMP", IMAGE_BITMAP, 0, 0,
+    hBmLogo = LoadImage(NULL, "CLOCKFACE.BMP", IMAGE_BITMAP, 0, 0,
         LR_LOADFROMFILE);
     GetObject(hBmLogo, sizeof(bm), &bm);
     hDC = GetDC(hWnd);
@@ -89,7 +84,6 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     hMemDCLogo = CreateCompatibleDC(hDC);
     SelectObject(hMemDCLogo, hBmLogo);
     ReleaseDC(hWnd, hDC);
-    return 0;
   case WM_SIZE:
     w = LOWORD(lParam);
     h = HIWORD(lParam);
@@ -101,29 +95,78 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     SelectObject(hMemDC, hBm);
     SendMessage(hWnd, WM_TIMER, 0, 0);
     return 0;
+  case WM_ERASEBKGND:
+    return 0;
+  case WM_KEYDOWN:
+    if (LOWORD(wParam) == 'F')
+      FlipFullScreen(hWnd);
+    if (LOWORD(wParam) == VK_ESCAPE)
+      SendMessage(hWnd, WM_DESTROY, 0, 0);
+    return 0;
   case WM_TIMER:
-    Rectangle(hMemDC, 0, 0, w + 1, h + 1);
-    BitBlt(hMemDC, 0, 0, bm.bmWidth, bm.bmHeight,
-      hMemDCLogo, 0, 0, SRCCOPY);
-    srand(30);
+    Rectangle(hMemDC, 0, 0, w + 1, h + 1);    
+    
+    BitBlt(hMemDC, 0, 0, bm.bmWidth, bm.bmHeight, hMemDCLogo, 0, 0, SRCCOPY);
+    hPen = CreatePen(PS_SOLID, 10, RGB(10, 10, 35));
+    hOldPen = SelectObject(hMemDC, hPen);
+    GetLocalTime(&st);
+    t = (st.wSecond  + st.wMilliseconds / 1000.0 ) / 60.0 * 2 * P;
+    si = sin(t);
+    co = cos(t);
+    PutLineTime(hMemDC, 500, 500, 500 + si * r, 500 - co * r);
+    t = (st.wMinute + st.wSecond / 60.0) / 60.0 * 2.0 * P + st.wSecond / 60;
+    si = sin(t);
+    co = cos(t);
+    PutLineTime(hMemDC, 500, 500, 500 + 300 * si, 500 - 300 * co);
+    t = (st.wHour + st.wMinute / 60.0) / 12.0 * 2.0 * P;
 
-    SetBkMode(hMemDC, TRANSPARENT);
-    SetTextColor(hMemDC, RGB(255, 0, 0));
-/*   TextOut(hMemDC, 30, 30, "30!", 3);   */
+    si = sin(t);
+    co = cos(t);
+    PutLineTime(hMemDC, 500, 500, 500 + 230 * si, 500 - 230 * co);
+    SelectObject(hMemDC, hOldPen);
+    DeleteObject(hPen);
     InvalidateRect(hWnd, NULL, FALSE);
     return 0;
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);
     BitBlt(hDC, 0, 0, w, h, hMemDC, 0, 0, SRCCOPY);
-    EndPaint(hWnd, &ps);
+    EndPaint(hWnd, &ps);                                                   
     return 0;
   case WM_DESTROY:
     KillTimer(hWnd, 30);
-    DeleteDC(hMemDC);
     DeleteObject(hBm);
+    DeleteObject(hMemDC); 
     PostQuitMessage(0);
     return 0;
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 } /* End of 'MyWinFunc' function */
-/* END OF T02CLOCK.C */
+
+INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, CHAR *CmdLine, INT ShowCmd )
+{
+  MSG msg;
+  HWND hWnd;
+  WNDCLASS wc;
+
+  wc.style = CS_HREDRAW | CS_VREDRAW;
+  wc.cbClsExtra = 0;
+  wc.cbWndExtra = 0;
+  wc.hCursor = LoadCursor(NULL, IDC_HAND);
+  wc.hIcon = LoadIcon(NULL, IDI_EXCLAMATION);
+  wc.hbrBackground = (HBRUSH)COLOR_WINDOW;
+  wc.hInstance = hInstance;
+  wc.lpszClassName = "My Window Class";
+  wc.lpszMenuName = NULL;
+  wc.lpfnWndProc = MyWinFunc;
+
+  RegisterClass(&wc);
+  hWnd = CreateWindow("My Window Class", "30!", WS_OVERLAPPEDWINDOW | WS_VISIBLE, 0, 0, 1044, 1044, NULL, NULL, hInstance, NULL);
+  ShowWindow(hWnd, ShowCmd);
+
+  while (GetMessage(&msg, NULL, 0, 0))
+    DispatchMessage(&msg);
+  
+  return 30;
+}/* End of 'WinMain' function */
+
+/* END OF T02CLOCK FILE */

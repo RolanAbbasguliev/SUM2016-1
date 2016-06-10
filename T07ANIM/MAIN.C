@@ -1,16 +1,10 @@
-/* FILE NAME: T06SPHR.C
+/* FILE NAME: T07ANIM.C
  * PROGRAMMER: MM3
- * DATE: 07.06.2016
- * PURPOSE: WinAPI windowed application sample.
+ * DATE: 10.06.2016
  */
 
-#include <stdlib.h>
-#include <math.h>
+#include "anim.h"
 
-#include <windows.h>
-#include "sphere.h"
-
-/* Window class name */
 #define WND_CLASS_NAME "My Window Class"
 
 /* Forward references */
@@ -85,7 +79,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
 
   /* Create window */
   hWnd = CreateWindow(WND_CLASS_NAME,
-    "Sphere",
+    "Window 4 animation",
     WS_OVERLAPPEDWINDOW,
     CW_USEDEFAULT, CW_USEDEFAULT,
     1000, 1900,
@@ -121,24 +115,10 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
   {
   case WM_CREATE:
     SetTimer(hWnd, 30, 10, NULL);
-    hBmLogo = LoadImage(NULL, "G.bmp", IMAGE_BITMAP, 0, 0,
-        LR_LOADFROMFILE);
-    GetObject(hBmLogo, sizeof(bm), &bm);
-    hDC = GetDC(hWnd);
-    hMemDC = CreateCompatibleDC(hDC);
-    hMemDCLogo = CreateCompatibleDC(hDC);
-    SelectObject(hMemDCLogo, hBmLogo);
-    ReleaseDC(hWnd, hDC);
+    MM3_Init(hWnd);
     return 0;
   case WM_SIZE:
-    w = LOWORD(lParam);
-    h = HIWORD(lParam);
-    if (hBm != NULL)
-      DeleteObject(hBm);
-    hDC = GetDC(hWnd);
-    hBm = CreateCompatibleBitmap(hDC, w, h);
-    ReleaseDC(hWnd, hDC);
-    SelectObject(hMemDC, hBm);
+    MM3_Resize(LOWORD(lParam), HIWORD(lParam));
     SendMessage(hWnd, WM_TIMER, 0, 0);
     return 0;
   case WM_KEYDOWN:
@@ -148,29 +128,20 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
       SendMessage(hWnd, WM_DESTROY, 0, 0);
     return 0;
   case WM_TIMER:
-    Rectangle(hMemDC, 0, 0, w + 1, h + 1);
-    BitBlt(hMemDC, 0, 0, bm.bmWidth, bm.bmHeight,
-      hMemDCLogo, 0, 0, SRCCOPY);
-    srand(clock() / 1000.0);
-    DrawSphere(hMemDC, 500, 500, 350);
-    SetBkMode(hMemDC, TRANSPARENT);
-    SetTextColor(hMemDC, RGB(255, 0, 0));
-/*   TextOut(hMemDC, 30, 30, "30!", 3);   */
+    MM3_Render();
     InvalidateRect(hWnd, NULL, FALSE);
     return 0;
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);
-    BitBlt(hDC, 0, 0, w, h, hMemDC, 0, 0, SRCCOPY);
+    MM3_CopyFrame(hMemDC);
     EndPaint(hWnd, &ps);
     return 0;
   case WM_DESTROY:
-    KillTimer(hWnd, 30);
-    DeleteDC(hMemDC);
-    DeleteObject(hBm);
+    MM3_Close();
     PostQuitMessage(0);
     return 0;
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 } /* End of 'MyWinFunc' function */
 
-/* END OF 'T06SPHR.C' FILE */
+/* END OF T07ANIM.C */

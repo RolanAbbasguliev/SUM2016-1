@@ -3,6 +3,7 @@
  * DATE: 07.06.2016
  * PURPOSE: WinAPI windowed application sample.
  */
+
 #ifndef __SPHERE_H_
 #define __SPHERE_H_
 

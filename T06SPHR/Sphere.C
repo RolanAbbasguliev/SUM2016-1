@@ -3,6 +3,7 @@
  * DATE: 07.06.2016
  * PURPOSE: WinAPI windowed application sample.
  */
+
 #include <math.h>
 #include <time.h>
 #include <windows.h>
@@ -130,6 +131,37 @@ VEC Rot( VEC V, DBL Angle )
  * Sphere handle functions
  ***/
 
+/* Draw quadrilateral function.
+ * ARGUMENTS:
+ *   - drawing device context:
+ *       HDC hDC;
+ *   - corner points:
+ *       POINT P0, P1, P2, P3;
+ *   - color:
+ *       DWORD Color;
+ * RETURNS: None.
+ */
+VOID DrawQuad( HDC hDC, POINT P0, POINT P1, POINT P2, POINT P3, DWORD Color )
+{
+  INT s =
+    (P0.x - P1.x) * (P0.y + P1.y) +
+    (P1.x - P2.x) * (P1.y + P2.y) +
+    (P2.x - P3.x) * (P2.y + P3.y) +
+    (P3.x - P0.x) * (P3.y + P0.y);
+
+  if (s > 0)
+  {
+    POINT pts[4];
+    
+    pts[0] = P0;
+    pts[1] = P1;
+    pts[2] = P2;
+    pts[3] = P3;
+
+    Polygon(hDC, pts, 4);
+  }
+} /* End of 'DrawQuad' function */
+
 /* Load sphere texture function.
  * ARGUMENTS: None.
  * RETURNS: None.
@@ -175,7 +207,9 @@ VOID LoadSphere( VOID )
 
 VOID DrawSphere( HDC hDC, INT Xc, INT Yc, INT R )
 {
-  INT i, j, x, y;
+  static POINT pts[M][N];
+  POINT p0, p1, p2, p3;
+  INT i, j/*, x, y*/;
   DBL theta, phi;
   static VEC G[M][N], A = 
   {
@@ -241,36 +275,53 @@ VOID DrawSphere( HDC hDC, INT Xc, INT Yc, INT R )
       LineTo(hDC, x, y);
     }
   }    */
-
-  LoadSphere();
-  
   for (i = 0; i < M; i++)
   {
     for (j = 0; j < N; j++)
+    {
+      pts[i][j].x = Xc + G[i][j].X;
+      pts[i][j].y = Yc - G[i][j].Z;         
+    }
+  }
+
+  LoadSphere();
+  
+  for (i = 0; i < (M - 1); i++)
+  {
+    for (j = 0; j < (N - 1); j++)
     {
       INT img_x, img_y;
       COLORREF c;
       BYTE r, g, b;
 
-      x = Xc + G[i][j].X;
-      y = Yc - G[i][j].Z;
+      img_x = j * (Globe.W - 1) / (N - 1);
+      img_y = i * (Globe.H - 1) / (M - 1);
 
-      img_x = j * (Globe.W - 1) / (M - 1);
-      img_y = i * (Globe.H - 1) / (N - 1);
-
-      c = Globe.Bits[img_y + img_x * Globe.W];
+      c = Globe.Bits[img_x + img_y * Globe.W];
       r = GetRValue(c);
       g = GetGValue(c);
       b = GetBValue(c);
       c = RGB(b, g, r);
 
-      if (G[i][j].Y < 0)
-        SetPixelV(hDC, x, y, c);
+      SelectObject(hDC, GetStockObject(DC_PEN));
+      SelectObject(hDC, GetStockObject(DC_BRUSH));
+
+      SetDCPenColor(hDC, c);
+      SetDCBrushColor(hDC, c);
+
+      p0 = pts[i][j];
+      p1 = pts[i][j + 1];
+      p2 = pts[i + 1][j + 1];
+      p3 = pts[i + 1][j];
+
+      if (G[i][j].Y <= 0)      
+        DrawQuad(hDC, p0, p1, p2, p3, 0);
+      /*SetPixelV(hDC, x, y, c);*/
     }
   }
 
-  SetDCPenColor(hDC, RGB(0, 0, 0));
-  SetDCBrushColor(hDC, RGB(0, 0, 0));
+  SetDCPenColor(hDC, RGB(255, 255, 255));
+  SetDCBrushColor(hDC, RGB(255, 255, 255));
 }/* End of DrawSphere func * / 
 
 /* END OF SPHERE.C */ 

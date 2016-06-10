@@ -1,7 +1,6 @@
 /* FILE NAME: T07ANIM.C
  * PROGRAMMER: MM3
- * DATE: 08.06.2016
- * PURPOSE: Animation.
+ * DATE: 10.06.2016
  */
 
 #ifndef __VEC_H_
@@ -12,8 +11,9 @@
 #define PI 3.14159265358979323846
 #define D2R(A) ((A) * PI / 180.0)
 
-/* базовый вещественный тип */
-typedef double DBL;
+/* базовый вещественные типы */
+typedef DOUBLE DBL;
+typedef FLOAT FLT;;
 
 /* тип для вектора в простанстве */
 typedef struct tagVEC
@@ -28,6 +28,16 @@ typedef struct tagMATR
 } MATR;
 
 /* Functions: */
+
+__inline DBL Rnd0( VOID )
+{
+  return (DBL)rand() / RAND_MAX;
+} /* End of 'Rnd0' function */
+
+__inline DBL Rnd1( VOID )
+{
+  return 2.0 * rand() / RAND_MAX - 1;
+} /* End of 'Rnd1' function */
 
 __inline VEC VecSet( DBL X, DBL Y, DBL Z )
 {
@@ -89,11 +99,6 @@ __inline VEC VecNormalize( VEC V )
     len = sqrt(len), V.X /= len, V.Y /= len, V.Z /= len;
   return V;
 } /* End of '' func */
-
-__inline VEC VecDotVec( VEC A, VEC B )
-{
-  return A.X * B.X + A.Y * B.Y + A.Z * B.Z);
-} /* End of 'VecDotVec' func */
 
 __inline VEC PointTransform( VEC V, MATR M )
 {
@@ -201,7 +206,7 @@ __inline MATR MatrRotateZ( DBL AngleDegree )
 
 __inline MATR MatrRotate( DBL AngleDegree, VEC R )
 {
-  DBL A = D2R(AngleToDegree), si = sin(A), co = cos(A);
+  DBL A = D2R(AngleDegree), si = sin(A), co = cos(A);
   VEC V = VecNormalize(R);
   MATR M =
   {
@@ -233,6 +238,7 @@ __inline MATR MatrIdentity( VOID )
 
 __inline MATR MatrMulMatr( MATR M1, MATR M2 )
 {
+  INT i, j, k;
   MATR r;
 
   for (i = 0; i < 4; i++)
