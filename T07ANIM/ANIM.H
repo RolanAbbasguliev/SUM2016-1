@@ -8,11 +8,11 @@
 
 #include "def.h"
 
-#define MM3_MAX_UNITS 10
+#define MM3_MAX_UNITS 100
 
 typedef struct tagMM3UNIT MM3UNIT;
 
-typedef struct tagMM3ANIM
+typedef struct tagmm3ANIM
 {
   HWND hWnd; 
   HDC hDC; 
@@ -20,14 +20,23 @@ typedef struct tagMM3ANIM
   HBITMAP hFrame;
   MM3UNIT *UNITs[MM3_MAX_UNITS];
   INT NumOfUNITs;
-}MM3ANIM;
+  INT
+    Mx, My, Mz, Mdx, Mdy, Mdz;
+  BYTE
+    Keys[256], OldKeys[256], KeysClick[256];
+  BYTE                        
+    JBut[32];                 
+  INT JPov;                   
+  DBL                         
+    JX, JY, JZ, JR;           
+}mm3ANIM;
 
 struct tagMM3UNIT
 {
-  VOID (* Init)( MM3UNIT *Uni, MM3ANIM *Ani );
-  VOID (* Close)( MM3UNIT *Uni, MM3ANIM *Ani );
-  VOID (* Response)( MM3UNIT *Uni, MM3ANIM *Ani );
-  VOID (* Render)( MM3UNIT *Uni, MM3ANIM *Ani );
+  VOID (* Init)( MM3UNIT *Uni, mm3ANIM *Ani );
+  VOID (* Close)( MM3UNIT *Uni, mm3ANIM *Ani );
+  VOID (* Response)( MM3UNIT *Uni, mm3ANIM *Ani );
+  VOID (* Render)( MM3UNIT *Uni, mm3ANIM *Ani );
 };
 
 VOID MM3_Init( HWND hWnd );

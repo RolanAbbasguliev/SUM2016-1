@@ -4,16 +4,25 @@
  */
 
 #include "anim.h"
+#include <mmsystem.h> 
 
-MM3ANIM mm3_Anim;
+#pragma comment(lib, "winmm")
+
+
+#define MM3_GET_JOYSTIC_AXIS(A) \
+  (2.0 * (ji.dw##A##pos - jc.w##A##min) / (jc.w##A##max - jc.w##A##min - 1) - 1)
+
+mm3ANIM MM3_Anim;
 
 VOID MM3_Init( HWND hWnd )
 {
   HDC hDC;
 
-  mm3_Anim.hWnd = hWnd;
+  memset(&MM3_Anim, 0, sizeof(mm3ANIM));
+
+  MM3_Anim.hWnd = hWnd;
   hDC = GetDC(hWnd);
-  mm3_Anim.hDC = CreateCompatibleDC(hDC);
+  MM3_Anim.hDC = CreateCompatibleDC(hDC);
   ReleaseDC(hWnd, hDC);
 }
 
@@ -21,53 +30,101 @@ VOID MM3_Resize( DBL W, DBL H )
 {
   HDC hDC;
 
-  mm3_Anim.W = W;
-  mm3_Anim.H = H;
+  MM3_Anim.W = W;
+  MM3_Anim.H = H;
 
-  if (mm3_Anim.hFrame != NULL)
-    DeleteObject(mm3_Anim.hFrame);
-  hDC = GetDC(mm3_Anim.hWnd);
-  mm3_Anim.hFrame = CreateCompatibleBitmap(hDC, W, H);
-  ReleaseDC(mm3_Anim.hWnd, hDC);
-  SelectObject(mm3_Anim.hDC, mm3_Anim.hFrame);
+  if (MM3_Anim.hFrame != NULL)
+    DeleteObject(MM3_Anim.hFrame);
+  hDC = GetDC(MM3_Anim.hWnd);
+  MM3_Anim.hFrame = CreateCompatibleBitmap(hDC, W, H);
+  ReleaseDC(MM3_Anim.hWnd, hDC);
+  SelectObject(MM3_Anim.hDC, MM3_Anim.hFrame);
 }
 
 VOID MM3_Render( VOID )
 { 
   INT i;
 
-  for (i = 0; i < mm3_Anim.NumOfUNITs; i++)
-    mm3_Anim.UNITs[i]->Response(mm3_Anim.UNITs[i], &mm3_Anim);
-
-  SelectObject(mm3_Anim.hDC, GetStockObject(NULL_PEN));
-  SelectObject(mm3_Anim.hDC, GetStockObject(DC_BRUSH));
-
-  SetDCBrushColor(mm3_Anim.hDC, RGB(100, 155, 220));
-
-  Rectangle(mm3_Anim.hDC, 0, 0, mm3_Anim.W + 1, mm3_Anim.H + 1);
-
-  for (i = 0; i < mm3_Anim.NumOfUNITs; i++)
+  if (joyGetNumDevs() > 0)
   {
-    SelectObject(mm3_Anim.hDC, GetStockObject(NULL_PEN));
-    SelectObject(mm3_Anim.hDC, GetStockObject(DC_BRUSH));
+    JOYCAPS jc;
 
-    SetDCPenColor(mm3_Anim.hDC, RGB(0, 0, 0));
-    SetDCPenColor(mm3_Anim.hDC, RGB(255, 255, 255));
+    /* Get joystick info */
+    if (joyGetDevCaps(JOYSTICKID1, &jc, sizeof(jc)) == JOYERR_NOERROR)
+    {
+      JOYINFOEX ji;
+
+      ji.dwSize = sizeof(JOYINFOEX);
+      ji.dwFlags = JOY_RETURNALL;
+      if (joyGetPosEx(JOYSTICKID1, &ji) == JOYERR_NOERROR)
+      {
+        /* Buttons */
+        for (i = 0; i < 32; i++)
+          MM3_Anim.JBut[i] = (ji.dwButtons >> i) & 1;
+
+        /* Axes */
+        MM3_Anim.JX = MM3_GET_JOYSTIC_AXIS(X);
+        MM3_Anim.JY = MM3_GET_JOYSTIC_AXIS(Y);
+        MM3_Anim.JZ = MM3_GET_JOYSTIC_AXIS(Z);
+        MM3_Anim.JR = MM3_GET_JOYSTIC_AXIS(R);
+
+        /* Point of view */
+       MM3_Anim.JPov = ji.dwPOV == 0xFFFF ? 0 : ji.dwPOV / 4500 + 1;
+      }
+    }
   }
-} 
 
+  
+  for (i = 0; i < MM3_Anim.NumOfUNITs; i++)
+    MM3_Anim.UNITs[i]->Response(MM3_Anim.UNITs[i], &MM3_Anim);
+
+  SelectObject(MM3_Anim.hDC, GetStockObject(NULL_PEN));
+  SelectObject(MM3_Anim.hDC, GetStockObject(DC_BRUSH));
+
+  SetDCBrushColor(MM3_Anim.hDC, RGB(100, 155, 220));
+
+  Rectangle(MM3_Anim.hDC, 0, 0, MM3_Anim.W + 1, MM3_Anim.H + 1);
+
+  for (i = 0; i < MM3_Anim.NumOfUNITs; i++)
+  {   
+    MM3_Anim.UNITs[i]->Render(MM3_Anim.UNITs[i], &MM3_Anim);
+  }
+
+  DrawSphere(MM3_Anim.hDC, 500, 500, 350);
+
+   /*for (i = 0; i < MM3_Anim.NumOfUNITs; i++)
+  MM3_Anim.UNITs[i]->Response(MM3_Anim.UNITs[i], &MM3_Anim);
+
+  SelectObject(MM3_Anim.hDC, GetStockObject(NULL_PEN));
+  SelectObject(MM3_Anim.hDC, GetStockObject(DC_BRUSH));
+
+  SetDCBrushColor(MM3_Anim.hDC, RGB(100, 155, 220));
+
+  Rectangle(MM3_Anim.hDC, 0, 0, MM3_Anim.W + 1, MM3_Anim.H + 1);
+
+  DrawSphere( MM3_Anim.hDC, 500, 500, 350 );
+
+  for (i = 0; i < MM3_Anim.NumOfUNITs; i++)
+  {
+    SelectObject(MM3_Anim.hDC, GetStockObject(DC_PEN));
+    SelectObject(MM3_Anim.hDC, GetStockObject(DC_BRUSH));
+
+    SetDCPenColor(MM3_Anim.hDC, RGB(0, 0, 0));
+    SetDCPenColor(MM3_Anim.hDC, RGB(255, 255, 255));
+  }*/
+}
 
 VOID MM3_CopyFrame( HDC hDC )
 {
-  BitBlt(hDC, 0, 0, mm3_Anim.W, mm3_Anim.H, mm3_Anim.hDC, 0, 0, SRCCOPY);
+  BitBlt(hDC, 0, 0, MM3_Anim.W, MM3_Anim.H, MM3_Anim.hDC, 0, 0, SRCCOPY);
 }
 
 VOID MM3_AddUNIT( MM3UNIT *Uni )
 {
-  if (mm3_Anim.NumOfUNITs < MM3_MAX_UNITS)
+  if (MM3_Anim.NumOfUNITs < MM3_MAX_UNITS)
   {
-    mm3_Anim.UNITs[mm3_Anim.NumOfUNITs++] = Uni;
-    Uni->Init(Uni, &mm3_Anim);
+    MM3_Anim.UNITs[MM3_Anim.NumOfUNITs++] = Uni;
+    Uni->Init(Uni, &MM3_Anim);
   }
 }
 
@@ -75,12 +132,15 @@ VOID MM3_Close( VOID )
 {
   INT i;
 
-  for (i = 0; i < mm3_Anim.NumOfUNITs; i++)
+  for (i = 0; i < MM3_Anim.NumOfUNITs; i++)
   {
-    mm3_Anim.UNITs[i]->Close(mm3_Anim.UNITs[i], &mm3_Anim);
-    free(mm3_Anim.UNITs[i]);
+    MM3_Anim.UNITs[i]->Close(MM3_Anim.UNITs[i], &MM3_Anim);
+    free(MM3_Anim.UNITs[i]);
   }
-  mm3_Anim.NumOfUNITs = 0;
+  MM3_Anim.NumOfUNITs = 0;
+  DeleteDC(MM3_Anim.hDC);
+  DeleteObject(MM3_Anim.hFrame);
+  memset(&MM3_Anim, 0, sizeof(mm3ANIM));
 }
 
 /* END OF ANIM.C */

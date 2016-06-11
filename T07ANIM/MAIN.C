@@ -111,7 +111,7 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
   static HBITMAP hBm, hBmLogo;
   static HDC hMemDC, hMemDCLogo;
 
-    switch (Msg)
+  switch (Msg)
   {
   case WM_CREATE:
     SetTimer(hWnd, 30, 10, NULL);
@@ -129,7 +129,7 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     return 0;
   case WM_TIMER:
     MM3_Render();
-    InvalidateRect(hWnd, NULL, FALSE);
+    /*InvalidateRect(hWnd, NULL, FALSE);*/
     return 0;
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);

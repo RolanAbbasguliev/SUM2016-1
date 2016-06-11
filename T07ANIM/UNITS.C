@@ -5,19 +5,19 @@
 
 #include "anim.h"
 
-static VOID MM3_UNITInit( MM3UNIT *Uni, MM3ANIM *Ani )
+static VOID MM3_UNITInit( MM3UNIT *Uni, mm3ANIM *Ani )
 {
 } /* End of 'MM3UNITInit' function */
 
-static VOID MM3_UNITClose( MM3UNIT *Uni, MM3ANIM *Ani )
+static VOID MM3_UNITClose( MM3UNIT *Uni, mm3ANIM *Ani )
 {
 } /* End of 'MM3UNITClose' function */
 
-static VOID MM3_UNITResponse( MM3UNIT *Uni, MM3ANIM *Ani )
+static VOID MM3_UNITResponse( MM3UNIT *Uni, mm3ANIM *Ani )
 {
 } /* End of 'MM3UNITResponse' function */
 
-static VOID MM3_UNITRender( MM3UNIT *Uni, MM3ANIM *Ani )
+static VOID MM3_UNITRender( MM3UNIT *Uni, mm3ANIM *Ani )
 {
 } /* End of 'MM3UNITRender' function */
 
@@ -36,6 +36,6 @@ MM3UNIT * MM3_UNITCreate( INT Size )
   Uni->Response = MM3_UNITResponse;
   Uni->Render = MM3_UNITRender;
   return Uni;
-} /* End of 'MM3ANIMUNITCreate' function */
+} /* End of 'mm3ANIMUNITCreate' function */
 
 /* END OF UNITS.C */

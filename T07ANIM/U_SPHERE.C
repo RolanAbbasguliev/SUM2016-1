@@ -7,7 +7,6 @@
 #include <math.h>
 #include <time.h>
 #include <windows.h>
-#include "sphere.h"
 
 #define M 300
 #define N 150
@@ -175,7 +174,7 @@ VOID LoadSphere( VOID )
 
   /* Load image from file */
   hMemDC = CreateCompatibleDC(hDC);
-  hBm = LoadImage(NULL, "G.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+  hBm = LoadImage(NULL, "F.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
   GetObject(hBm, sizeof(bm), &bm);
   Globe.W = bm.bmWidth;
   Globe.H = bm.bmHeight;
