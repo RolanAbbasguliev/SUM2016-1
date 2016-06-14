@@ -4,6 +4,7 @@
  */
 
 #include "anim.h"
+#include "units.h"
 
 #define WND_CLASS_NAME "My Window Class"
 
@@ -94,6 +95,8 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   ShowWindow(hWnd, CmdShow);
   UpdateWindow(hWnd);
 
+  /*MM3_AddUNIT(MM3_UNITCreateBall()); */
+
   /* Run message loop */
   while (GetMessage(&msg, NULL, 0, 0))
     DispatchMessage(&msg);
@@ -138,6 +141,7 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     return 0;
   case WM_DESTROY:
     MM3_Close();
+    MM3_DoExit();
     PostQuitMessage(0);
     return 0;
   }

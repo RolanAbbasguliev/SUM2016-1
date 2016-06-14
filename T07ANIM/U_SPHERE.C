@@ -2,7 +2,7 @@
  * PROGRAMMER: MM3
  * DATE: 07.06.2016
  * PURPOSE: WinAPI windowed application sample.
- */
+ * /
 
 #include <math.h>
 #include <time.h>
@@ -22,7 +22,7 @@ typedef struct
   DBL X, Y, Z;
 } VEC;
 
-/* Image representation type */
+/* Image representation type * /
 typedef struct
 {
   HBITMAP hBmGlobe;
@@ -38,7 +38,7 @@ IMG Globe;
  *       VEC A, B;
  * RETURNS:
  *   (DBL) dot product value.
- */
+ * /
 DBL VecDotVec( VEC A, VEC B )
 {
   return A.X * B.X + A.Y * B.Y + A.Z * B.Z;
@@ -50,7 +50,7 @@ DBL VecDotVec( VEC A, VEC B )
  *       DBL A, B, C;
  * RETURNS:
  *   (VEC) constructed vector.
- */
+ * /
 VEC VecSet( DBL A, DBL B, DBL C )
 {
   VEC r = {A, B, C};
@@ -64,7 +64,7 @@ VEC VecSet( DBL A, DBL B, DBL C )
  *       VEC V;
  * RETURNS:
  *   (VEC) normalized vector value.
- */
+ * /
 VEC VecNormalize( VEC V )
 {
   DBL len = VecDotVec(V, V);
@@ -84,7 +84,7 @@ VEC VecNormalize( VEC V )
  *       DBL Angle;
  * RETURNS:
  *   (VEC) rotated vector value.
- */
+ * /
 VEC Rotate( VEC P, VEC A, DBL Angle )
 {
   DBL si, co;
@@ -114,7 +114,7 @@ VEC Rotate( VEC P, VEC A, DBL Angle )
  *       DBL Angle;
  * RETURNS:
  *   (VEC) rotated vector value.
- */
+ * /
 VEC Rot( VEC V, DBL Angle )
 {
   DBL A = Angle * PI / 180;
@@ -139,7 +139,7 @@ VEC Rot( VEC V, DBL Angle )
  *   - color:
  *       DWORD Color;
  * RETURNS: None.
- */
+ * /
 VOID DrawQuad( HDC hDC, POINT P0, POINT P1, POINT P2, POINT P3, DWORD Color )
 {
   INT s =
@@ -164,7 +164,7 @@ VOID DrawQuad( HDC hDC, POINT P0, POINT P1, POINT P2, POINT P3, DWORD Color )
 /* Load sphere texture function.
  * ARGUMENTS: None.
  * RETURNS: None.
- */
+ * /
 VOID LoadSphere( VOID )
 {
   HDC hDC = GetDC(NULL), hMemDC, hMemDC1;
@@ -172,7 +172,7 @@ VOID LoadSphere( VOID )
   BITMAP bm;
   BITMAPINFOHEADER bmih;
 
-  /* Load image from file */
+  /* Load image from file * /
   hMemDC = CreateCompatibleDC(hDC);
   hBm = LoadImage(NULL, "F.bmp", IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
   GetObject(hBm, sizeof(bm), &bm);
@@ -180,15 +180,15 @@ VOID LoadSphere( VOID )
   Globe.H = bm.bmHeight;
   SelectObject(hMemDC, hBm);
 
-  /* Fill DIB info */
+  /* Fill DIB info * /
   memset(&bmih, 0, sizeof(bmih));
   bmih.biSize = sizeof(BITMAPINFOHEADER);
-  bmih.biBitCount = 32;                   /* BGRx - DWORD */
-  bmih.biPlanes = 1;                      /* always */
-  bmih.biCompression = BI_RGB;            /* 0 - no compression */
-  bmih.biWidth = bm.bmWidth;              /* width */
-  bmih.biHeight = -bm.bmHeight;           /* height + first coded row is 0 */
-  bmih.biSizeImage = bm.bmWidth * bm.bmHeight * 4;  /* image size in bytes */
+  bmih.biBitCount = 32;                   
+  bmih.biPlanes = 1;                      
+  bmih.biCompression = BI_RGB;            
+  bmih.biWidth = bm.bmWidth;              
+  bmih.biHeight = -bm.bmHeight;           
+  bmih.biSizeImage = bm.bmWidth * bm.bmHeight * 4;  
 
   Globe.hBmGlobe = CreateDIBSection(NULL, (BITMAPINFO *)&bmih, DIB_RGB_COLORS,
                  (VOID **)&Globe.Bits, NULL, 0);
@@ -202,13 +202,13 @@ VOID LoadSphere( VOID )
   DeleteObject(hBm);
 
   ReleaseDC(NULL, hDC);
-} /* End of 'LoadSphere' function */
+} /* End of 'LoadSphere' function * /
 
 VOID DrawSphere( HDC hDC, INT Xc, INT Yc, INT R )
 {
   static POINT pts[M][N];
   POINT p0, p1, p2, p3;
-  INT i, j/*, x, y*/;
+  INT i, j/*, x, y* /;
   DBL theta, phi;
   static VEC G[M][N], A = 
   {
@@ -273,7 +273,7 @@ VOID DrawSphere( HDC hDC, INT Xc, INT Yc, INT R )
       
       LineTo(hDC, x, y);
     }
-  }    */
+  }    * /
   for (i = 0; i < M; i++)
   {
     for (j = 0; j < N; j++)
@@ -315,7 +315,7 @@ VOID DrawSphere( HDC hDC, INT Xc, INT Yc, INT R )
 
       if (G[i][j].Y <= 0)      
         DrawQuad(hDC, p0, p1, p2, p3, 0);
-      /*SetPixelV(hDC, x, y, c);*/
+      /*SetPixelV(hDC, x, y, c);* /
     }
   }
 

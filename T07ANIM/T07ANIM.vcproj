@@ -194,11 +194,7 @@
 				Name="Objects"
 				>
 				<File
-					RelativePath=".\U_BALL.C"
-					>
-				</File>
-				<File
-					RelativePath=".\U_SPHERE.C"
+					RelativePath=".\UCUBE.C"
 					>
 				</File>
 			</Filter>
@@ -207,6 +203,22 @@
 				>
 				<File
 					RelativePath=".\MAIN.C"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Render"
+				>
+				<File
+					RelativePath=".\RENDER.C"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Image"
+				>
+				<File
+					RelativePath=".\IMAGE.C"
 					>
 				</File>
 			</Filter>
@@ -241,6 +253,22 @@
 				>
 				<File
 					RelativePath=".\VEC.H"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Render"
+				>
+				<File
+					RelativePath=".\RENDER.H"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="Image"
+				>
+				<File
+					RelativePath=".\IMAGE.H"
 					>
 				</File>
 			</Filter>

@@ -211,10 +211,10 @@ __inline MATR MatrRotate( DBL AngleDegree, VEC R )
   MATR M =
   {
     {
-      {co + V.X * V.X * (1 - co),        V.X * V.Y * (1 - co) - V.Z * si,  V.X * V.Z * (1 - co) + V.Y * si, 0},
-      {V.Y * V.X * (1 - co) + V.Z * si,  co + V.Y * V.Y * (1 - co),        V.Y * V.Z * (1 - co) - V.X * si, 0},
-      {V.Z * V.X * (1 - co) - V.Y * si,  V.Z * V.Y * (1 - co) + V.X * si,  co + V.Z * V.Z * (1 - co),       0},
-      {0,                                0,                                0,                               1}
+      {        co + V.X * V.X * (1 - co),  V.X * V.Y * (1 - co) - V.Z * si,  V.X * V.Z * (1 - co) + V.Y * si,  0},
+      {  V.Y * V.X * (1 - co) + V.Z * si,        co + V.Y * V.Y * (1 - co),  V.Y * V.Z * (1 - co) - V.X * si,  0},
+      {  V.Z * V.X * (1 - co) - V.Y * si,  V.Z * V.Y * (1 - co) + V.X * si,        co + V.Z * V.Z * (1 - co),  0},
+      {                                0,                                0,                                0,  1}
     }
   };
 
@@ -345,6 +345,41 @@ __inline MATR MatrInverse( MATR M )
                              M.A[2][0], M.A[2][1], M.A[2][2]) / det;
 
 } /* End of 'MatrInverse' func */
+
+__inline MATR MatrView( VEC Loc, VEC At, VEC Up1 )
+{
+  VEC
+    Dir = VecNormalize(VecSubVec(At, Loc)),
+    Right = VecNormalize(VecCrossVec(Dir, Up1)),
+    Up = VecNormalize(VecCrossVec(Right, Dir));
+  MATR m =
+  {
+    {
+      {                 Right.X,                 Up.X,               -Dir.X,  0},
+      {                 Right.Y,                 Up.Y,               -Dir.Y,  0},
+      {                 Right.Z,                 Up.Z,               -Dir.Z,  0},
+      {  -VecDotVec(Loc, Right),  -VecDotVec(Loc, Up),  VecDotVec(Loc, Dir),  1}
+    }
+  };
+
+  return m;
+} /* End of 'MatrView' function */
+
+__inline MATR MatrFrustum( DBL Left, DBL Right, DBL Bottom, DBL Top, DBL Near, DBL Far )
+{
+  MATR m =
+  {
+    {
+      {        2 * Near / (Right - Left),                                0,                               0,   0},
+      {                                0,        2 * Near / (Top - Bottom),                               0,   0},
+      {  (Right + Left) / (Right - Left),  (Top + Bottom) / (Top - Bottom),    -(Far + Near) / (Far - Near),  -1},
+      {                                0,                                0,  -2 * Near * Far / (Far - Near),   0}
+    }
+  };
+
+  return m;
+}
+
 #endif
 
 /* END OF VEC.H */
