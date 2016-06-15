@@ -18,6 +18,11 @@ typedef struct
   INT NumOfE;      /* Edges array size */
 } mm3PRIM;
 
+typedef struct tagmm3COLOR
+{
+  FLT R, G, B, A;
+} mm3COLOR;
+
 extern MATR MM3_RndMatrWorld, MM3_RndMatrView, MM3_RndMatrProj;
 extern DBL MM3_RndProjSize, MM3_RndProjDist, MM3_RndFarClip;
 
@@ -35,7 +40,8 @@ VOID MM3_RndSetProj( VOID );
  */
 VOID MM3_RndPrimDraw( mm3PRIM *Pr );
 
+BOOL MM3_RndPrimLoad( mm3PRIM *Pr, CHAR *FileName );
 
 #endif /* __RENDER_H_ */
 
-/* END OF 'RENDER.H' FILE */
+/* END OF 'RENDER.H' FILE */         

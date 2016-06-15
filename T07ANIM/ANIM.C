@@ -11,11 +11,11 @@
 
 #include "vec.h"
 
-#pragma comment(lib, "winmm")
+/*#pragma comment(lib, "winmm")*/
 
 #include "render.h"
 
-#define DS1_GET_JOYSTICK_AXIS(A) \
+#define MM3_GET_JOYSTICK_AXIS(A) \
   (2.0 * (ji.dw##A##pos - jc.w##A##min) / (jc.w##A##max - jc.w##A##min - 1) - 1)
 
 /* Timer local data */
@@ -64,8 +64,22 @@ VOID MM3_Init( HWND hWnd )
 
   MM3_RndMatrWorld = MatrIdentity();
   MM3_RndMatrProj = MatrFrustum(-1, 1, -1, 1, 1, 100);
-  MM3_RndMatrView = MatrView(VecSet(5, 5, 5), VecSet(0, 0, 0), VecSet(0, 1, 0));
+  MM3_RndMatrView = MatrView(VecSet(25, 25, 25), VecSet(0, 0, 0), VecSet(0, 1, 0));
 } /* End of 'MM3_AnimInit' function */
+
+/* Animation system initialization function.
+ * ARGUMENTS:
+ *   - Animation parameters:
+ *       mm3ANIM *Ani;
+ * RETURNS: None.
+ */
+VOID MM3_AddUNIT( MM3UNIT *Uni )
+{
+  if (MM3_Anim.NumOfUNITs >= MM3_MAX_UNITS)
+    return;
+  MM3_Anim.UNITs[MM3_Anim.NumOfUNITs++] = Uni;
+  Uni->Init(Uni, &MM3_Anim);
+} /* End of 'MM3_AnimAddUNIT' function */
 
 /* Animation system deinitialization function.
  * ARGUMENTS: None;
@@ -190,12 +204,12 @@ VOID MM3_Render( VOID )
   }
   memcpy(MM3_Anim.KeysOld, MM3_Anim.Keys, 256);
 
-  /* Joystick */
-  if (joyGetNumDevs() > 0)
+  /* Joystick * /
+  /*if (joyGetNumDevs() > 0)
   {
     JOYCAPS jc;
 
-    /* Get joystick info */
+    /* Get joystick info * /
     if (joyGetDevCaps(JOYSTICKID1, &jc, sizeof(JOYCAPS))== JOYERR_NOERROR)
     {
       JOYINFOEX ji;
@@ -203,46 +217,48 @@ VOID MM3_Render( VOID )
       ji.dwFlags = JOY_RETURNALL;
       if (joyGetPosEx(JOYSTICKID1, &ji) == JOYERR_NOERROR)
       {
-        /* Buttons */
+        /* Buttons * /
         for (i = 0; i < 32; i++)
           MM3_Anim.JBut[i] = (ji.dwButtons >> i) & 1;
-        /* Axes */
+        /* Axes * /
         MM3_Anim.JX = (2.0 * (ji.dwXpos - jc.wXmin) / (jc.wXmax - jc.wXmin - 1) - 1);
-        MM3_Anim.JX = DS1_GET_JOYSTICK_AXIS(X);
-        MM3_Anim.JY = DS1_GET_JOYSTICK_AXIS(Y);
-        MM3_Anim.JZ = DS1_GET_JOYSTICK_AXIS(Z);
-        MM3_Anim.JR = DS1_GET_JOYSTICK_AXIS(R);
-        /* Point of view */
+        MM3_Anim.JX = MM3_GET_JOYSTICK_AXIS(X);
+        MM3_Anim.JY = MM3_GET_JOYSTICK_AXIS(Y);
+        MM3_Anim.JZ = MM3_GET_JOYSTICK_AXIS(Z);
+        MM3_Anim.JR = MM3_GET_JOYSTICK_AXIS(R);
+        /* Point of view * /
         MM3_Anim.JPov = ji.dwPOV == 0xFFFF ? 0 : ji.dwPOV / 4500 + 1;
       }
     }
-  }
+  }*/
   
   tr = VecAddVec(tr, VecSet(MM3_Anim.JX, MM3_Anim.JY, MM3_Anim.JZ));
-  /*MM3_MatrView = MatrixTranslate(MM3_Anim.JX, MM3_Anim.JY, MM3_Anim.JZ);
-   *
-   *
-  /*** Send response to all units ***/
+  /*MM3_MatrView = MatrixTranslate(MM3_Anim.JX, MM3_Anim.JY, MM3_Anim.JZ);*/
+
+  /*** Send response to all UNITs ***/
   for (i = 0; i < MM3_Anim.NumOfUNITs; i++)
     MM3_Anim.UNITs[i]->Response(MM3_Anim.UNITs[i], &MM3_Anim);
 
   /*** Clear frame ***/
   hPen = SelectObject(MM3_Anim.hDC, GetStockObject(DC_PEN));
   hBr = SelectObject(MM3_Anim.hDC, GetStockObject(DC_BRUSH));
-  SetDCPenColor(MM3_Anim.hDC, RGB(0, 155, 0));
-  SetDCBrushColor(MM3_Anim.hDC, RGB(100, 200, 150));
+  SetDCPenColor(MM3_Anim.hDC, RGB(0, 150, 0));
+  SetDCBrushColor(MM3_Anim.hDC, RGB(100, 150, 200));  
+
   Rectangle(MM3_Anim.hDC, 0, 0, MM3_Anim.W, MM3_Anim.H);
-  SetDCPenColor(MM3_Anim.hDC, RGB(0, 0, 0));
+  /*
+  SetDCPenColor(MM3_Anim.hDC, RGB(255, 255, 255));
   SetDCBrushColor(MM3_Anim.hDC, RGB(255, 255, 255));
   SelectObject(MM3_Anim.hDC, hPen);
   SelectObject(MM3_Anim.hDC, hBr);
-  /*** Render all unit ***/
+  */
+  /*** Render all UNIT ***/
   for (i = 0; i < MM3_Anim.NumOfUNITs; i++)
   {
     SelectObject(MM3_Anim.hDC, GetStockObject(DC_PEN));
     SelectObject(MM3_Anim.hDC, GetStockObject(DC_BRUSH));
-    SetDCPenColor(MM3_Anim.hDC, RGB(0, 0, 0));
-    SetDCBrushColor(MM3_Anim.hDC, RGB(255, 255, 255));
+    SetDCPenColor(MM3_Anim.hDC, RGB(255, 255, 255));
+    SetDCBrushColor(MM3_Anim.hDC, RGB(0, 0, 0));
     MM3_Anim.UNITs[i]->Render(MM3_Anim.UNITs[i], &MM3_Anim);
   }
 
@@ -283,19 +299,5 @@ VOID MM3_DoExit( VOID )
 {
   DestroyWindow(MM3_Anim.hWnd);
 } /* End of 'MM3_AnimClose' function */
-
-/* Animation system initialization function.
- * ARGUMENTS:
- *   - Animation parameters:
- *       mm3ANIM *Ani;
- * RETURNS: None.
- */
-VOID MM3_AddUNIT( MM3UNIT *Uni )
-{
-  if (MM3_Anim.NumOfUNITs >= MM3_MAX_UNITS)
-    return;
-  MM3_Anim.UNITs[MM3_Anim.NumOfUNITs++] = Uni;
-  Uni->Init(Uni, &MM3_Anim);
-} /* End of 'MM3_AnimAddUnit' function */
 
 /* END OF 'ANIM.C' FILE */

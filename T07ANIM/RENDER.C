@@ -14,7 +14,7 @@ MATR MM3_RndMatrWorld,
      MM3_RndMatrView, 
      MM3_RndMatrProj;
 
-DBL MM3_RndProjSize = 10, MM3_RndProjDist = 10, MM3_RndFarClip = 100;
+DBL MM3_RndProjSize = 1, MM3_RndProjDist = 1, MM3_RndFarClip = 100;
 
 /* Setup projection function.
  * ARGUMENTS: None.
@@ -59,10 +59,12 @@ VOID MM3_RndPrimDraw( mm3PRIM *Pr )
   if (pts == NULL)
     return;
   SelectObject(MM3_Anim.hDC, GetStockObject(DC_PEN));
+  SetDCPenColor(MM3_Anim.hDC, RGB(255, 255, 255));
+
   for (i = 0; i < Pr->NumOfP; i++)
   {
     /* NDC */
-    VEC p = PointTransform(Pr->P[i], M);
+    VEC p = PointTransform4(Pr->P[i], M);
 
     pts[i].x = (INT)((p.X + 1) * MM3_Anim.W / 2);
     pts[i].y = (INT)((-p.Y + 1) * MM3_Anim.H / 2);

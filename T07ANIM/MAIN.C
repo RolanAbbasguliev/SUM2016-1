@@ -2,9 +2,13 @@
  * PROGRAMMER: MM3
  * DATE: 10.06.2016
  */
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+#include <windows.h>
 
 #include "anim.h"
-#include "units.h"
+#include "UNITs.h"
 
 #define WND_CLASS_NAME "My Window Class"
 
@@ -94,8 +98,8 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   /* Show window */
   ShowWindow(hWnd, CmdShow);
   UpdateWindow(hWnd);
-
-  /*MM3_AddUNIT(MM3_UNITCreateBall()); */
+ 
+  MM3_AddUNIT(MM3_UNITCreateCube());
 
   /* Run message loop */
   while (GetMessage(&msg, NULL, 0, 0))
@@ -132,17 +136,21 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     return 0;
   case WM_TIMER:
     MM3_Render();
-    /*InvalidateRect(hWnd, NULL, FALSE);*/
+    /*InvalidateRect(hWnd, NULL, FALSE);*/  
+    InvalidateRect(hWnd, NULL, FALSE);
     return 0;
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);
-    MM3_CopyFrame(hMemDC);
+    /* Animation copy frame */
+    MM3_CopyFrame(hDC);
     EndPaint(hWnd, &ps);
     return 0;
   case WM_DESTROY:
     MM3_Close();
     MM3_DoExit();
     PostQuitMessage(0);
+    return 0;
+  case WM_ERASEBKGND:
     return 0;
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);

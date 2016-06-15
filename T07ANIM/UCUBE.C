@@ -1,13 +1,14 @@
 /* FILENAME: CUBE.C
  * PROGRAMMER: DS1
  * DATE: 07.06.2016
- * PURPOSE: Sprite unit drawing module
+ * PURPOSE: Sprite UNIT drawing module
  */
 
 #include <string.h>
 
 #include "anim.h"
 #include "render.h"
+#include "vec.h"
 
 typedef struct
 {
@@ -41,70 +42,72 @@ INT CubeE[][2] =
   {4, 5}, {6, 7}, {5, 6}, {7, 4},
   {0, 4}, {1, 5}, {2, 6}, {3, 7}*/
 };
+
 mm3PRIM Cube =
 {
   CubeP, sizeof(CubeP) / sizeof(CubeP[0]),
   CubeE, sizeof(CubeE) / sizeof(CubeE[0])
 };
 
-/* Unit cube initialization function.
+/* UNIT cube initialization function.
  * ARGUMENTS:
- *   - self-pointer to unit object:
+ *   - self-pointer to UNIT object:
  *       vg4UNIT_CUBE *Uni;
  *   - animation context:
  *       vg4ANIM *Ani;
  * RETURNS: None.
  */
-static VOID MM3_UnitInit( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
+static VOID MM3_UNITInit( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
 {
   MM3_RndPrimLoad(&Uni->Pr, "modela\\cow.g3d");
-} /* End of 'VG4_UnitInit' function */
+} /* End of 'VG4_UNITInit' function */
 
-/* Unit deinitialization function.
+/* UNIT deinitialization function.
  * ARGUMENTS:
- *   - self-pointer to unit object:
+ *   - self-pointer to UNIT object:
  *       MM3UNIT *Uni;
  *   - animation context:
  *       mm3ANIM *Ani;
  * RETURNS: None.
  */
-static VOID MM3_UnitClose( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
+static VOID MM3_UNITClose( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
 {
   MM3_RndPrimFree(&Uni->Pr);
-} /* End of 'MM3_UnitClose' function */
+}/* End of 'MM3_UNITClose' function */
 
-/* Unit render function.
+/* UNIT render function.
  * ARGUMENTS:
- *   - self-pointer to unit object:
+ *   - self-pointer to UNIT object:
  *       MM3UNIT_CUBE *Uni;
  *   - animation context:
  *       mm3ANIM *Ani;
  * RETURNS: None.
  */
-static VOID MM3_UnitRender( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
+static VOID MM3_UNITRender( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
 {
-  /*DS1_RndMatrWorld = MatrixScale(1, 1, 1);/*MatrixRotate(Ani->Time, 0, 1, 0);,);*/
-  /*MM3_RndPrimDraw(&Cube);*/
+  MM3_RndMatrWorld = MatrMulMatr(MatrMulMatr(MatrScale(VecSet(1, 1, 1)), MatrRotateX(Ani->Time * 30)),
+    MatrMulMatr(MatrScale(VecSet(1, 1, 1)), MatrRotateY(Ani->Time * 30)));
+  MM3_RndPrimDraw(&Cube);
   MM3_RndPrimDraw(&Uni->Pr);
-} /* End of 'MM3_UnitRender' function */
+} /* End of 'MM3_UNITRender' function */
 
-/* Unit cube creation function.
+/* UNIT cube creation function.
  * ARGUMENTS: None.
  * RETURNS:
- *   (MM3UNIT *) pointer to created unit.
+ *   (MM3UNIT *) pointer to created UNIT.
  */
-MM3UNIT * MM3_UnitCreateCube( VOID )
+MM3UNIT * MM3_UNITCreateCube( VOID )
 {
   MM3UNIT_CUBE *Uni;
 
   if ((Uni = (MM3UNIT_CUBE *)MM3_UNITCreate(sizeof(MM3UNIT_CUBE))) == NULL)
     return NULL;
-  /* Setup unit methods */
-  Uni->Init = (VOID *)MM3_UnitInit;
-  Uni->Render = (VOID *)MM3_UnitRender;
-  Uni->Close = (VOID *)MM3_UnitClose;
+  /* Setup UNIT methods */
+  Uni->Init = (VOID *)MM3_UNITInit;
+  Uni->Render = (VOID *)MM3_UNITRender;
+  Uni->Close = (VOID *)MM3_UNITClose;
   return (MM3UNIT *)Uni;
-} /* End of 'MM3_UnitCreateCube' function */
+} /* End of 'MM3_UNITCreateCube' function */
 
 
 /* END OF 'CUBE.C' FILE */

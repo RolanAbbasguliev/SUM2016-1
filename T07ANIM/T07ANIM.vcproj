@@ -194,6 +194,10 @@
 				Name="Objects"
 				>
 				<File
+					RelativePath=".\UCONTROL.C"
+					>
+				</File>
+				<File
 					RelativePath=".\UCUBE.C"
 					>
 				</File>
@@ -219,6 +223,14 @@
 				>
 				<File
 					RelativePath=".\IMAGE.C"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="LoadImg"
+				>
+				<File
+					RelativePath=".\LOADOBJ.C"
 					>
 				</File>
 			</Filter>

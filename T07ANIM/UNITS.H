@@ -6,7 +6,7 @@
 #define __UNITS_H_
 
 /*VOID DrawSphere( HDC hDC, INT Xc, INT Yc, INT R );*/
-MM3UNIT * MM3_UNITCreateBall( VOID );
+MM3UNIT * MM3_UNITCreateCube( VOID );
 
 #endif
 
