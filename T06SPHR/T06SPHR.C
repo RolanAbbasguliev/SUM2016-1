@@ -169,6 +169,8 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     DeleteObject(hBm);
     PostQuitMessage(0);
     return 0;
+  case WM_ERASEBKGND:
+    return 0;
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);
 } /* End of 'MyWinFunc' function */

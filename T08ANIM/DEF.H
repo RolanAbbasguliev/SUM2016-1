@@ -11,7 +11,7 @@
 #include <gl/gl.h>
 #include <gl/glu.h>
 
-#pragma warning(disable: 4244 4013 4133 4047 4305)
+#pragma warning(disable: 4244 4013 4133 4047 4305 4024)
 #include <windows.h>
 
 /* Debug memory allocation support */

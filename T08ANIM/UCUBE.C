@@ -52,15 +52,15 @@ mm3PRIM Cube =
 /* UNIT cube initialization function.
  * ARGUMENTS:
  *   - self-pointer to UNIT object:
- *       vg4UNIT_CUBE *Uni;
+ *       mm3UNIT_CUBE *Uni;
  *   - animation context:
- *       vg4ANIM *Ani;
+ *       mm3ANIM *Ani;
  * RETURNS: None.
  */
 static VOID MM3_UNITInit( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
-{
-  MM3_RndPrimLoad(&Uni->Pr, "modela\\cow.g3d");
-} /* End of 'VG4_UNITInit' function */
+{                 
+  MM3_RndPrimLoad(&Uni->Pr, "modela\\UFO.g3d");
+} /* End of 'MM3_UNITInit' function */
 
 /* UNIT deinitialization function.
  * ARGUMENTS:
@@ -85,8 +85,8 @@ static VOID MM3_UNITClose( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
  */
 static VOID MM3_UNITRender( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
 {
-  MM3_RndMatrWorld = MatrMulMatr(MatrMulMatr(MatrScale(VecSet(1, 1, 1)), MatrRotateX(Ani->Time * 30)),
-    MatrMulMatr(MatrScale(VecSet(1, 1, 1)), MatrRotateY(Ani->Time * 30)));
+  MM3_RndMatrWorld = /*MatrMulMatr(*//*MatrMulMatr(*/MatrScale(VecSet(1, 1, 1))/*, MatrRotateY(Ani->Time * 30))*/
+    /*, MatrMulMatr(MatrScale(VecSet(1, 1, 1)), MatrRotateX(Ani->Time * 30)))*/;
   MM3_RndPrimDraw(&Cube);
   MM3_RndPrimDraw(&Uni->Pr);
 } /* End of 'MM3_UNITRender' function */
@@ -109,5 +109,4 @@ MM3UNIT * MM3_UNITCreateCube( VOID )
   return (MM3UNIT *)Uni;
 } /* End of 'MM3_UNITCreateCube' function */
 
-
-/* END OF 'CUBE.C' FILE */
+/* END OF 'UCUBE.C' FILE */

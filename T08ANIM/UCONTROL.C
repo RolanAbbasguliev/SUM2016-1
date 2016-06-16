@@ -40,21 +40,23 @@ static VOID MM3_UNITResponse( MM3UNIT_CONTROL *Uni, mm3ANIM *Ani )
     glPolygonMode(GL_FRONT, GL_LINE);
   if (Ani->Keys['U'])
     glPolygonMode(GL_BACK, GL_LINE);
- /* if (Ani->Keys['C'])
-    MM3_AddUNIT(MM3_UNITCreateCube()); */
+  if (Ani->Keys['C'])
+    MM3_AddUNIT(MM3_UNITCreateCube()); 
   if (Ani->KeysClick[VK_ESCAPE])
     MM3_DoExit();
   if (Ani->KeysClick['P'])
     Ani->IsPause = !Ani->IsPause;
 
-  /* Uni->Pos.Y += Ani->JY * Ani->GlobalDeltaTime; */
+  /* Uni->Pos.Y += Ani->JY * Ani->GlobalDeltaTime; * /
   Uni->Pos = PointTransform(Uni->Pos, MatrRotateX(59 * Ani->JY * Ani->GlobalDeltaTime));
   Uni->Pos = PointTransform(Uni->Pos, MatrRotateY(59 * Ani->JX * Ani->GlobalDeltaTime));
+  */
 
   if (Ani->Keys[VK_LBUTTON])
   {
-    Uni->Pos = PointTransform(Uni->Pos, MatrRotateY(59 * Ani->Mdx * Ani->GlobalDeltaTime));
-    Uni->Pos = PointTransform(Uni->Pos, MatrRotateX(59 * Ani->Mdy * Ani->GlobalDeltaTime));
+    Uni->Pos = PointTransform(Uni->Pos, MatrRotateY(61 * Ani->Mdx * Ani->GlobalDeltaTime));
+    Uni->Pos = PointTransform(Uni->Pos, MatrRotateX(61 * Ani->Mdy * Ani->GlobalDeltaTime));
+    Uni->Pos = PointTransform(Uni->Pos, MatrRotateZ(61 * Ani->Mdz * Ani->GlobalDeltaTime));
   }
 
   Uni->Pos = PointTransform(Uni->Pos, MatrRotateY(59 * Ani->Keys[VK_RIGHT] * Ani->GlobalDeltaTime));
