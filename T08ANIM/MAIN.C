@@ -99,7 +99,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   ShowWindow(hWnd, CmdShow);
   UpdateWindow(hWnd);
  
-  MM3_AddUNIT(MM3_UNITCreateCube());
+  /*MM3_AddUNIT(MM3_UNITCreateCube());*/
   MM3_AddUNIT(MM3_UNITCreateControl());
   
   /* Run message loop */

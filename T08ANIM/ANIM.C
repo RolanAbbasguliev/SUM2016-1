@@ -71,7 +71,7 @@ VOID MM3_Init( HWND hWnd )
   wglMakeCurrent(MM3_Anim.hDC, MM3_Anim.hGLRC);
 
   /* OpenGL init: setup extensions: GLEW library */
-  /*if (glewInit() != GLEW_OK ||
+  if (glewInit() != GLEW_OK ||
       !(GLEW_ARB_vertex_shader && GLEW_ARB_fragment_shader))
   {
     wglMakeCurrent(NULL, NULL);
@@ -99,9 +99,12 @@ VOID MM3_Init( HWND hWnd )
   MM3_StartTime = MM3_OldTime = MM3_OldTimeFPS = t.QuadPart;
   MM3_PauseTime = 0;
 
+  MM3_RndMatrView = MatrView(VecSet(0, 1, 0), VecSet(0, 0, 0), VecSet(0, 1, 0));
   MM3_RndMatrWorld = MatrIdentity();
   MM3_RndMatrProj = MatrFrustum(-1, 1, -1, 1, 1, 100);
-  MM3_RndMatrView = MatrView(VecSet(100, 100, 100), VecSet(0, 0, 0), VecSet(0, 1, 0));
+
+  MM3_RndPrg = MM3_RndShaderLoad("a");
+
 } /* End of 'MM3_AnimInit' function */
 
 /* Animation system initialization function.
@@ -141,6 +144,7 @@ VOID MM3_Close( VOID )
 
   DeleteObject(MM3_Anim.hFrame);
   DeleteDC(MM3_Anim.hDC);*/
+  MM3_RndShaderFree(MM3_RndPrg);
 } /* End of 'MM3_AnimClose' function */
 
 /* Animation system resize function.

@@ -41,20 +41,20 @@ __inline VEC VecSet( FLT X, FLT Y, FLT Z )
   VEC r = {X, Y, Z};
 
   return r;
-}/* The end of 'VecSet' function */
+}/* End of 'VecSet' function */
 
 __inline VEC4 Vec4Set( FLT X, FLT Y, FLT Z, FLT A )
 {
   VEC4 r = {X, Y, Z, A};
 
   return r;
-}/* The end of 'VecSet' function */
+}/* End of 'VecSet' function */
 
 /* Start of 'VecAddVec' function */
 __inline VEC VecAddVec( VEC A, VEC B )
 {
   return VecSet(A.X + B.X, A.Y + B.Y, A.Z + B.Z);
-}/* The end of 'VecAddVec' function */
+}/* End of 'VecAddVec' function */
 
 __inline VEC VecSubVec( VEC A, VEC B )
 {
@@ -72,7 +72,7 @@ __inline VEC VecDivNum( VEC A, FLT N )
 __inline VEC VecNeg( VEC A )
 {
   return VecSet(-A.X, -A.Y, -A.Z);
-}/* The end of 'VecNeg' function */
+}/* End of 'VecNeg' function */
 
 /* Start of 'VecDotVec' function */
 __inline FLT VecDotVec( VEC A, VEC B )
@@ -109,7 +109,7 @@ __inline VEC PointTransform( VEC V, MATR M )
     V.X * M.A[0][2] + V.Y * M.A[
       
       1][2] + V.Z * M.A[2][2] + M.A[3][2]);
-}/* The end of 'PointTransform' function */
+}/* End of 'PointTransform' function */
 
 /* Start of 'VectorTransform' function */
 __inline VEC VectorTransform( VEC V, MATR M )
@@ -118,7 +118,7 @@ __inline VEC VectorTransform( VEC V, MATR M )
     V.X * M.A[0][0] + V.Y * M.A[1][0] + V.Z * M.A[2][0],
     V.X * M.A[0][1] + V.Y * M.A[1][1] + V.Z * M.A[2][1],
     V.X * M.A[0][2] + V.Y * M.A[1][2] + V.Z * M.A[2][2]);
-}/* The end of 'VectorTransform' function */
+}/* End of 'VectorTransform' function */
 
 
 /* Start of 'PointTransform4' function */
@@ -130,7 +130,7 @@ __inline VEC PointTransform4( VEC V, MATR M )
     (V.X * M.A[0][0] + V.Y * M.A[1][0] + V.Z * M.A[2][0] + M.A[3][0]) / w,
     (V.X * M.A[0][1] + V.Y * M.A[1][1] + V.Z * M.A[2][1] + M.A[3][1]) / w,
     (V.X * M.A[0][2] + V.Y * M.A[1][2] + V.Z * M.A[2][2] + M.A[3][2]) / w);
-}/* The end of 'PointTransform4' function */
+}/* End of 'PointTransform4' function */
 
 /* Start of 'MatrTranslate' function */
 __inline MATR MatrTranslate( VEC D )
@@ -146,7 +146,7 @@ __inline MATR MatrTranslate( VEC D )
   };
 
   return M;
-} /* The end of 'MatrTranslate' function */
+} /* End of 'MatrTranslate' function */
 
 /* Start of 'MatrRotateX' function */
 __inline MATR MatrScale( VEC S )
@@ -163,7 +163,7 @@ __inline MATR MatrScale( VEC S )
   return M;
 }
 
-__inline MATR MatrFrustum( FLT Left, FLT Right, FLT Bottom, FLT Top, FLT Near, FLT Far )
+/*__inline MATR MatrFrustum( FLT Left, FLT Right, FLT Bottom, FLT Top, FLT Near, FLT Far )
 {
   MATR m =
   {
@@ -177,6 +177,7 @@ __inline MATR MatrFrustum( FLT Left, FLT Right, FLT Bottom, FLT Top, FLT Near, F
 
   return m;
 } 
+
 __inline MATR MatrView( VEC Loc, VEC At, VEC Up1 )
 {
   VEC
@@ -193,7 +194,8 @@ __inline MATR MatrView( VEC Loc, VEC At, VEC Up1 )
     }
   };
   return m;
-}
+}*/
+
 /* Start of 'MatrRotateX' function */
 __inline MATR MatrRotateX( FLT AngleDegree )
 {        
@@ -208,7 +210,7 @@ __inline MATR MatrRotateX( FLT AngleDegree )
     }
   };
   return M;
-} /* The end of 'MatrRotateX' function */
+} /* End of 'MatrRotateX' function */
 /* Start of 'MatrRotateY' function */
 __inline MATR MatrRotateY( FLT AngleDegree )
 {
@@ -223,7 +225,8 @@ __inline MATR MatrRotateY( FLT AngleDegree )
     }
   };
   return M;
-} /* The end of 'MatrRotateY' function */
+} /* End of 'MatrRotateY' function */
+
 /* Start of 'MatrRotateZ' function */
 __inline MATR MatrRotateZ( FLT AngleDegree )
 {        
@@ -238,7 +241,7 @@ __inline MATR MatrRotateZ( FLT AngleDegree )
     }
   };
   return M;
-} /* The end of 'MatrRotateZ' function */
+} /* End of 'MatrRotateZ' function */
 /* Start of 'MatrRotate' function */
 __inline MATR MatrRotate( FLT AngleDegree, VEC R )
 {
@@ -255,7 +258,7 @@ __inline MATR MatrRotate( FLT AngleDegree, VEC R )
   };
 
   return M;
-}/* The end of 'MatrRotate' function */
+}/* End of 'MatrRotate' function */
 
 /* Start of 'MatrIdentity' function */
 __inline MATR MatrIdentity( VOID )
@@ -271,7 +274,7 @@ __inline MATR MatrIdentity( VOID )
   };
 
   return M;
-}/* The end of 'MatrIdentity' function */
+}/* End of 'MatrIdentity' function */
 
 /* Start of 'MatrMulMatr' function */
 __inline MATR MatrMulMatr( MATR M1, MATR M2 )
@@ -284,7 +287,7 @@ __inline MATR MatrMulMatr( MATR M1, MATR M2 )
       for (k = 0, r.A[i][j] = 0; k < 4; k++)
         r.A[i][j] += M1.A[i][k] * M2.A[k][j];
   return r;
-}/* The end of 'MatrMulMatr' function */
+}/* End of 'MatrMulMatr' function */
 __inline FLT Rnd0( VOID )
 {
   return (FLT)rand() / RAND_MAX;
@@ -311,7 +314,7 @@ __inline MATR MatrTransponse( MATR M)
       r.A[i][j] = M.A[i][j];
   
   return r;
-}/* The end of 'MatrTranspose' function */
+}/* End of 'MatrTranspose' function */
 
 __inline FLT MatrDeterm3x3( FLT A11, FLT A12, FLT A13,
                    FLT A21, FLT A22, FLT A23,
@@ -319,7 +322,7 @@ __inline FLT MatrDeterm3x3( FLT A11, FLT A12, FLT A13,
 {
   return A11 * A22 * A33 + A12 * A23 * A31 + A13 * A21 * A32 -
          A11 * A23 * A32 - A12 * A21 * A33 - A13 * A22 * A31;
-}/* The end of 'MatrTranspose' function */
+}/* End of 'MatrTranspose' function */
 
 /* Start of 'MatrDeterm' function */
 __inline FLT MatrDeterm( MATR M )
@@ -337,7 +340,7 @@ __inline FLT MatrDeterm( MATR M )
     M.A[0][3] * MatrDeterm3x3(M.A[1][0], M.A[1][1], M.A[1][2],
                               M.A[2][0], M.A[2][1], M.A[2][2],
                               M.A[3][0], M.A[3][1], M.A[3][2]);
-}/* The end of 'MatrDeterm' function */
+}/* End of 'MatrDeterm' function */
 
 /* Start of 'MatrInverse' function */
 __inline MATR MatrInverse( MATR M )
@@ -399,7 +402,42 @@ __inline MATR MatrInverse( MATR M )
                              M.A[1][0], M.A[1][1], M.A[1][2],
                              M.A[2][0], M.A[2][1], M.A[2][2]) / det;
 
-}/* The end of 'MatrInverse' function */
+}/* End of 'MatrInverse' function */
+
+__inline MATR MatrView( VEC Loc, VEC At, VEC Up1 )
+{
+  VEC
+    Dir = VecNormalize(VecSubVec(At, Loc)),
+    Right = VecNormalize(VecCrossVec(Dir, Up1)),
+    Up = VecNormalize(VecCrossVec(Right, Dir));
+  MATR m =
+  {
+    {
+      {                 Right.X,                 Up.X,               -Dir.X,  0},
+      {                 Right.Y,                 Up.Y,               -Dir.Y,  0},
+      {                 Right.Z,                 Up.Z,               -Dir.Z,  0},
+      {  -VecDotVec(Loc, Right),  -VecDotVec(Loc, Up),  VecDotVec(Loc, Dir),  1}
+    }
+  };
+
+  return m;
+} /* End of 'MatrView' function */
+                                  
+__inline MATR MatrFrustum( FLT Left, FLT Right, FLT Bottom, FLT Top, FLT Near, FLT Far )
+{
+  MATR m =
+  {
+    {
+      {        2 * Near / (Right - Left),                                0,                               0,   0},
+      {                                0,        2 * Near / (Top - Bottom),                               0,   0},
+      {  (Right + Left) / (Right - Left),  (Top + Bottom) / (Top - Bottom),    -(Far + Near) / (Far - Near),  -1},
+      {                                0,                                0,  -2 * Near * Far / (Far - Near),   0}
+    }
+  };
+
+  return m;
+}
+
 #endif
 
 /* END OF VEC.H */

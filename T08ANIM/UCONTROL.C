@@ -47,20 +47,22 @@ static VOID MM3_UNITResponse( MM3UNIT_CONTROL *Uni, mm3ANIM *Ani )
   if (Ani->KeysClick['P'])
     Ani->IsPause = !Ani->IsPause;
 
-  /* Uni->Pos.Y += Ani->JY * Ani->GlobalDeltaTime; * /
+  /* Uni->Pos.Y += Ani->JY * Ani->GlobalDeltaTime; */
   Uni->Pos = PointTransform(Uni->Pos, MatrRotateX(59 * Ani->JY * Ani->GlobalDeltaTime));
-  Uni->Pos = PointTransform(Uni->Pos, MatrRotateY(59 * Ani->JX * Ani->GlobalDeltaTime));
-  */
+  Uni->Pos = PointTransform(Uni->Pos, MatrRotateY(59 * Ani->JX * Ani->GlobalDeltaTime));  
 
   if (Ani->Keys[VK_LBUTTON])
   {
     Uni->Pos = PointTransform(Uni->Pos, MatrRotateY(61 * Ani->Mdx * Ani->GlobalDeltaTime));
     Uni->Pos = PointTransform(Uni->Pos, MatrRotateX(61 * Ani->Mdy * Ani->GlobalDeltaTime));
-    Uni->Pos = PointTransform(Uni->Pos, MatrRotateZ(61 * Ani->Mdz * Ani->GlobalDeltaTime));
+    /*Uni->Pos = PointTransform(Uni->Pos, MatrRotateZ(61 * Ani->Mdz * Ani->GlobalDeltaTime));*/
   }
 
-  Uni->Pos = PointTransform(Uni->Pos, MatrRotateY(59 * Ani->Keys[VK_RIGHT] * Ani->GlobalDeltaTime));
-  Uni->Pos = PointTransform(Uni->Pos, MatrRotateY(-59 * Ani->Keys[VK_LEFT] * Ani->GlobalDeltaTime));
+  Uni->Pos = PointTransform(Uni->Pos, MatrRotateY(100 * Ani->Keys[VK_RIGHT] * Ani->GlobalDeltaTime));
+  Uni->Pos = PointTransform(Uni->Pos, MatrRotateY(-100 * Ani->Keys[VK_LEFT] * Ani->GlobalDeltaTime));
+  Uni->Pos = PointTransform(Uni->Pos, MatrRotateX(100 * Ani->Keys[VK_UP] * Ani->GlobalDeltaTime));
+  Uni->Pos = PointTransform(Uni->Pos, MatrRotateX(-100 * Ani->Keys[VK_DOWN] * Ani->GlobalDeltaTime));
+  /*Uni->Pos = PointTransform(Uni->Pos, MatrRotateZ(59 * Ani->Keys[VK_BACK] * Ani->GlobalDeltaTime));*/
 
   r = VecLen(Uni->Pos);
   Uni->Pos = VecMulNum(Uni->Pos, (r + Ani->Mdz * Ani->DeltaTime * 0.1) / r);

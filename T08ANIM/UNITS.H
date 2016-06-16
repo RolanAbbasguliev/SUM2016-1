@@ -7,6 +7,7 @@
 
 /*VOID DrawSphere( HDC hDC, INT Xc, INT Yc, INT R );*/
 MM3UNIT * MM3_UNITCreateCube( VOID );
+MM3UNIT * MM3_UNITCreateControl( VOID );
 
 #endif
 

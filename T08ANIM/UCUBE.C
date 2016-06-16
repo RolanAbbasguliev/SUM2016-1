@@ -14,6 +14,11 @@ typedef struct
 {
   MM3UNIT;
   mm3PRIM Pr;
+  VEC Pos; /* Ball position */
+  VEC Shift; /* Ball shift position */
+  DBL TimerShift; /* Timer shift phase value*/
+  DBL TimerSpeed; /* Timer speed value*/
+  COLORREF Color; /* Color */
 } MM3UNIT_CUBE;
 
 VEC CubeP[] =
@@ -58,8 +63,14 @@ mm3PRIM Cube =
  * RETURNS: None.
  */
 static VOID MM3_UNITInit( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
-{                 
-  MM3_RndPrimLoad(&Uni->Pr, "modela\\UFO.g3d");
+{     
+ MM3_RndMatrWorld = MatrMulMatr(MatrScale(VecSet(0.000030, 0.000030, 0.000030)),
+                                  MatrMulMatr(MatrRotateY((Uni->TimerSpeed * Ani->Time) * 30 + Uni->TimerShift),
+                                    MatrTranslate(VecAddVec(Uni->Pos,
+                                      VecMulNum(VecSet(Ani->JX, Ani->JY, Ani->JZ), 3)))));
+
+  MM3_RndPrimLoad(&Uni->Pr, "modela\\btr.g3d");
+  /*MM3_RndPrimLoad(&Uni->Pr, "modela\\UFO.g3d");*/
 } /* End of 'MM3_UNITInit' function */
 
 /* UNIT deinitialization function.
@@ -75,6 +86,13 @@ static VOID MM3_UNITClose( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
   MM3_RndPrimFree(&Uni->Pr);
 }/* End of 'MM3_UNITClose' function */
 
+static VOID MM3_UNITResponse( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
+{
+  DBL t = Uni->TimerSpeed * clock() / 1000.0 + Uni->TimerShift;
+
+  Uni->Shift = VecSet(30 * sin(t), 30 * cos(t), 0);
+}
+
 /* UNIT render function.
  * ARGUMENTS:
  *   - self-pointer to UNIT object:
@@ -85,7 +103,7 @@ static VOID MM3_UNITClose( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
  */
 static VOID MM3_UNITRender( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
 {
-  MM3_RndMatrWorld = /*MatrMulMatr(*//*MatrMulMatr(*/MatrScale(VecSet(1, 1, 1))/*, MatrRotateY(Ani->Time * 30))*/
+  MM3_RndMatrWorld = /*MatrMulMatr(*/MatrMulMatr(MatrScale(VecSet(1, 1, 1)), MatrRotateY(Ani->Time * 30))
     /*, MatrMulMatr(MatrScale(VecSet(1, 1, 1)), MatrRotateX(Ani->Time * 30)))*/;
   MM3_RndPrimDraw(&Cube);
   MM3_RndPrimDraw(&Uni->Pr);
