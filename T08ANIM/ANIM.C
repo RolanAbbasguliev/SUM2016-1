@@ -82,8 +82,12 @@ VOID MM3_Init( HWND hWnd )
   /* OpenGL specific initialization */
   glClearColor(0.3, 0.5, 0.7, 1);
   glEnable(GL_DEPTH_TEST);
-  /* glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); * /
+  /* glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); */
 
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  /*
   memset(&MM3_Anim, 0, sizeof(mm3ANIM));
   MM3_Anim.hWnd = hWnd;
   hDC = GetDC(hWnd);

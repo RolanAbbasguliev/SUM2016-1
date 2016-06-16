@@ -53,7 +53,7 @@ static VOID MM3_UNITResponse( MM3UNIT_CONTROL *Uni, mm3ANIM *Ani )
 
   if (Ani->Keys[VK_LBUTTON])
   {
-    Uni->Pos = PointTransform(Uni->Pos, MatrRotateY(61 * Ani->Mdx * Ani->GlobalDeltaTime));
+    Uni->Pos = PointTransform(Uni->Pos, MatrRotateY(-61 * Ani->Mdx * Ani->GlobalDeltaTime));
     Uni->Pos = PointTransform(Uni->Pos, MatrRotateX(61 * Ani->Mdy * Ani->GlobalDeltaTime));
     /*Uni->Pos = PointTransform(Uni->Pos, MatrRotateZ(61 * Ani->Mdz * Ani->GlobalDeltaTime));*/
   }

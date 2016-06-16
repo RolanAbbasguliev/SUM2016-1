@@ -8,12 +8,12 @@
 
 #include "anim.h"
 #include "render.h"
-#include "vec.h"
 
 typedef struct
 {
   MM3UNIT;
-  mm3PRIM Pr;
+  /*mm3PRIM Pr;*/
+  mm3OBJ Pr;
   VEC Pos; /* Ball position */
   VEC Shift; /* Ball shift position */
   DBL TimerShift; /* Timer shift phase value*/
@@ -64,12 +64,11 @@ mm3PRIM Cube =
  */
 static VOID MM3_UNITInit( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
 {     
- MM3_RndMatrWorld = MatrMulMatr(MatrScale(VecSet(0.000030, 0.000030, 0.000030)),
-                                  MatrMulMatr(MatrRotateY((Uni->TimerSpeed * Ani->Time) * 30 + Uni->TimerShift),
-                                    MatrTranslate(VecAddVec(Uni->Pos,
-                                      VecMulNum(VecSet(Ani->JX, Ani->JY, Ani->JZ), 3)))));
+  Uni->Pos = VecSet(Rnd1(), Rnd1(), Rnd1());
+  Uni->TimerShift = Rnd1() * 30;
+  Uni->TimerSpeed = Rnd1() * 8;
 
-  MM3_RndPrimLoad(&Uni->Pr, "modela\\btr.g3d");
+  MM3_RndObjLoad(&Uni->Pr, "modela\\UFO.g3d");
   /*MM3_RndPrimLoad(&Uni->Pr, "modela\\UFO.g3d");*/
 } /* End of 'MM3_UNITInit' function */
 
@@ -83,7 +82,7 @@ static VOID MM3_UNITInit( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
  */
 static VOID MM3_UNITClose( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
 {
-  MM3_RndPrimFree(&Uni->Pr);
+  MM3_RndObjFree(&Uni->Pr);
 }/* End of 'MM3_UNITClose' function */
 
 static VOID MM3_UNITResponse( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
@@ -103,10 +102,10 @@ static VOID MM3_UNITResponse( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
  */
 static VOID MM3_UNITRender( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
 {
-  MM3_RndMatrWorld = /*MatrMulMatr(*/MatrMulMatr(MatrScale(VecSet(1, 1, 1)), MatrRotateY(Ani->Time * 30))
+  MM3_RndMatrWorld = /*MatrMulMatr(*//*MatrMulMatr(*/MatrScale(VecSet(1, 1, 1))/*, MatrRotateY(Ani->Time * 30))*/
     /*, MatrMulMatr(MatrScale(VecSet(1, 1, 1)), MatrRotateX(Ani->Time * 30)))*/;
-  MM3_RndPrimDraw(&Cube);
-  MM3_RndPrimDraw(&Uni->Pr);
+  MM3_RndObjDraw(&Cube);
+  MM3_RndObjDraw(&Uni->Pr);
 } /* End of 'MM3_UNITRender' function */
 
 /* UNIT cube creation function.

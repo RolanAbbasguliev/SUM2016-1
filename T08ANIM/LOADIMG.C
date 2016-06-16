@@ -12,16 +12,16 @@
 
 #include "anim.h"
 
-/* Load primitive from '*.g3d' file function.
+/* Load object from '*.g3d' file function.
  * ARGUMENTS:
- *   - primitive structure pointer:
- *       mm3PRIM *Pr;
+ *   - object structure pointer:
+ *       mm3OBJ *Obj;
  *   - file name:
  *       CHAR *FileName;
  * RETURNS:
  *   (BOOL) TRUE is success, FALSE otherwise.
  */
-BOOL MM3_RndPrimLoad( mm3PRIM *Pr, CHAR *FileName )
+BOOL MM3_RndObjLoad( mm3OBJ *Obj, CHAR *FileName )
 {
   FILE *F;
   DWORD Sign;
@@ -34,7 +34,7 @@ BOOL MM3_RndPrimLoad( mm3PRIM *Pr, CHAR *FileName )
   mm3VERTEX *V;
   INT *I;
 
-  memset(Pr, 0, sizeof(mm3PRIM));
+  memset(Obj, 0, sizeof(mm3OBJ));
 
   F = fopen(FileName, "rb");
   if (F == NULL)
@@ -68,6 +68,16 @@ BOOL MM3_RndPrimLoad( mm3PRIM *Pr, CHAR *FileName )
   }
   fread(&NumOfPrimitives, 4, 1, F);
   fread(MtlFile, 1, 300, F);
+  MM3_RndLoadMaterials(MtlFile);
+
+  /* Allocate mnemory for primitives */
+  if ((Obj->Prims = malloc(sizeof(mm3PRIM) * NumOfPrimitives)) == NULL)
+  {
+    fclose(F);
+    return FALSE;
+  }
+  Obj->NumOfPrims = NumOfPrimitives;
+
   for (p = 0; p < NumOfPrimitives; p++)
   {
     /* Read primitive info */
@@ -76,31 +86,38 @@ BOOL MM3_RndPrimLoad( mm3PRIM *Pr, CHAR *FileName )
     fread(Mtl, 1, 300, F);
 
     /* Allocate memory for primitive */
-    if ((V = malloc(sizeof(mm3VERTEX) * NumOfV)) == NULL)
+    if ((V = malloc(sizeof(mm3VERTEX) * NumOfV + sizeof(INT) * NumOfI)) == NULL)
     {
+      while (p-- > 0)
+      {
+        glBindVertexArray(Obj->Prims[p].VA);
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glDeleteBuffers(1, &Obj->Prims[p].VBuf);
+        glBindVertexArray(0);
+        glDeleteVertexArrays(1, &Obj->Prims[p].VA);
+        glDeleteBuffers(1, &Obj->Prims[p].IBuf);
+      }
+      free(Obj->Prims);
+      memset(Obj, 0, sizeof(mm3OBJ));
       fclose(F);
       return FALSE;
     }
-    if ((I = malloc(sizeof(INT) * NumOfI)) == NULL)
-    {
-      free(V);
-      V = NULL;
-      fclose(F);
-      return FALSE;
-    }
-    Pr->NumOfI = NumOfI;
+    I = (INT *)(V + NumOfV);
+    Obj->Prims[p].NumOfI = NumOfI;
+    Obj->Prims[p].M = MatrIdentity();
+    Obj->Prims[p].MtlNo = MM3_RndFindMaterial(Mtl);
     fread(V, sizeof(mm3VERTEX), NumOfV, F);
     fread(I, sizeof(INT), NumOfI, F);
 
     /* Create OpenGL buffers */
-    glGenVertexArrays(1, &Pr->VA);
-    glGenBuffers(1, &Pr->VBuf);
-    glGenBuffers(1, &Pr->IBuf);
+    glGenVertexArrays(1, &Obj->Prims[p].VA);
+    glGenBuffers(1, &Obj->Prims[p].VBuf);
+    glGenBuffers(1, &Obj->Prims[p].IBuf);
 
     /* Activate vertex array */
-    glBindVertexArray(Pr->VA);
+    glBindVertexArray(Obj->Prims[p].VA);
     /* Activate vertex buffer */
-    glBindBuffer(GL_ARRAY_BUFFER, Pr->VBuf);
+    glBindBuffer(GL_ARRAY_BUFFER, Obj->Prims[p].VBuf);
     /* Store vertex data */
     glBufferData(GL_ARRAY_BUFFER, sizeof(mm3VERTEX) * NumOfV, V, GL_STATIC_DRAW);
 
@@ -127,119 +144,16 @@ BOOL MM3_RndPrimLoad( mm3PRIM *Pr, CHAR *FileName )
     glEnableVertexAttribArray(3);
 
     /* Indices */
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Pr->IBuf);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Obj->Prims[p].IBuf);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(INT) * NumOfI, I, GL_STATIC_DRAW);
 
     /* Disable vertex array */
     glBindVertexArray(0);
 
     free(V);
-    free(I);
-    break;
   }
   fclose(F);
   return TRUE;
-} /* End of 'MM3_RndPrimLoad' function */
+} /* End of 'MM3_RndObjLoad' function */
 
 /* END OF 'LOADPRIM.C' FILE */
-
-
-/*#include <stdio.h>
-
-#include "render.h"
-#include "vec.h"
-
-/* Load primitive from '*.g3d' file function.
- * ARGUMENTS:
- *   - primitive structure pointer:
- *       mm3PRIM *Pr;
- *   - file name:
- *       CHAR *FileName;
- * RETURNS:
- *   (BOOL) TRUE is success, FALSE otherwise.
- * /   
-BOOL MM3_RndPrimLoad( mm3PRIM *Pr, CHAR *FileName )
-{
-  FILE *F;
-  DWORD Sign;
-  INT NumOfPrimitives;
-  CHAR MtlFile[300];
-  INT NumOfP;
-  INT NumOfI;
-  CHAR Mtl[300];
-  INT p;
-
-  memset(Pr, 0, sizeof(mm3PRIM));
-
-  F = fopen(FileName, "rb");
-  if (F == NULL)
-    return FALSE;
-
-  /* File structure:
-   *   4b Signature: "G3D\0"    CHAR Sign[4];
-   *   4b NumOfPrimitives       INT NumOfPrimitives;
-   *   300b material file name: CHAR MtlFile[300];
-   *   repeated NumOfPrimitives times:
-   *     4b INT NumOfP; - vertex count
-   *     4b INT NumOfI; - index (triangles * 3) count
-   *     300b material name: CHAR Mtl[300];
-   *     repeat NumOfP times - vertices:
-   *         !!! float point -> FLT
-   *       typedef struct
-   *       {
-   *         VEC  P;  - Vertex position
-   *         VEC2 T;  - Vertex texture coordinates
-   *         VEC  N;  - Normal at vertex
-   *         VEC4 C;  - Vertex color
-   *       } VERTEX;
-   *     repeat (NumOfF / 3) times - facets (triangles):
-   *       INT N0, N1, N2; - for every triangle (N* - vertex number)
-   * /
-  fread(&Sign, 4, 1, F);
-  if (Sign != *(DWORD *)"G3D")
-  {
-    fclose(F);
-    return FALSE;
-  }
-  fread(&NumOfPrimitives, 4, 1, F);
-  fread(MtlFile, 1, 300, F);
-  for (p = 0; p < NumOfPrimitives; p++)
-  {
-    /* Read primitive info * /
-    fread(&NumOfP, 4, 1, F);
-    fread(&NumOfI, 4, 1, F);
-    fread(Mtl, 1, 300, F);
-
-    /* Allocate memory for primitive * /
-    if ((Pr->V = malloc(sizeof(mm3VERTEX) * NumOfP)) == NULL)
-    {
-      fclose(F);
-      return FALSE;
-    }
-    if ((Pr->I = malloc(sizeof(INT) * NumOfI)) == NULL)
-    {
-      free(Pr->V);
-      Pr->V = NULL;
-      fclose(F);
-      return FALSE;
-    }
-    Pr->NumOfV = NumOfP;
-    Pr->NumOfI = NumOfI;
-    fread(Pr->V, sizeof(mm3VERTEX), NumOfP, F);
-    fread(Pr->I, sizeof(INT), NumOfI, F);
-    if (Pr->NumOfV > 0)
-    {
-      INT i;
-
-      for (i = 0; i < Pr->NumOfV; i++)
-        Pr->V[i].C = Vec4Set(Pr->V[i].N.X / 2 + 0.5,
-                             Pr->V[i].N.Y / 2 + 0.5,
-                             Pr->V[i].N.Z / 2 + 0.5, 1); /* Vec4Set(Rnd0(), Rnd0(), Rnd0(), 1); * /
-    }
-    break;
-  }
-  fclose(F);
-  return TRUE;
-} /* End of 'MM3_RndPrimLoad' function */
-
-/* END OF 'LOADOBJ.C' FILE */

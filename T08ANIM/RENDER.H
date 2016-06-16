@@ -7,6 +7,8 @@
 #ifndef __RENDER_H_
 #define __RENDER_H_
 
+#define MM3_MAX_MATERIALS 10000
+
 #include "def.h"
 
 typedef struct tagmm3COLOR
@@ -37,10 +39,7 @@ typedef struct
     IBuf; /* Index buffer */
   INT NumOfI;       /* Facets index array size */
   MATR M; /* Primitive transformation matrix */
-/*  mm3VERTEX *V;     /* Primitive vertex array * /
-  INT NumOfV;       /* Point array size * /
-  INT *I;           /* Facets index array * /
-  INT NumOfI;       /* Facets index array size */
+  INT MtlNo; /* Material number */
 } mm3PRIM;
 
 typedef struct
@@ -49,26 +48,30 @@ typedef struct
   INT NumOfPrims;
 } mm3OBJ;
 
+typedef struct
+{
+  CHAR Name[300]; /* Material name */
+  VEC Ka, Kd, Ks; /* Illumination coefficients */
+  FLT Ph, Trans;  /* Shininess and Phong, transparency */
+  INT TexW, TexH; /* Textiure image size */
+  INT TexNo;      /* For load: bytes per pixel, in use: OpenGL texture no */
+} mm3MTL;
+
 extern MATR MM3_RndMatrWorld, MM3_RndMatrView, MM3_RndMatrProj;
 extern DBL MM3_RndProjSize, MM3_RndProjDist, MM3_RndFarClip;
 extern UINT MM3_RndPrg;
-/* Setup projection function.
- * ARGUMENTS: None.
- * RETURNS: None.
- */
+
+extern mm3MTL MM3_RndMaterials[MM3_MAX_MATERIALS];
+extern INT MM3_RndNumOfMaterials;
+
 VOID MM3_RndSetProj( VOID );
 
-/* Primitive draw function.
- * ARGUMENTS:
- *   - primtive to draw:
- *       mm3PRIM *Pr;
- * RETURNS: None.
- */
 VOID MM3_RndPrimDraw( mm3PRIM *Pr );
 
 BOOL MM3_RndPrimLoad( mm3PRIM *Pr, CHAR *FileName );
 
 VOID MM3_RndSetProj( VOID );
+
 VOID MM3_RndObjDraw( mm3OBJ *Obj );
 BOOL MM3_RndObjLoad( mm3OBJ *Obj, CHAR *FileName );
 VOID MM3_RndObjFree( mm3OBJ *Obj );
