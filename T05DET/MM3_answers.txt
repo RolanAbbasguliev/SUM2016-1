@@ -1,0 +1,39 @@
+File:   mat1.txt, Determinant1:             0.000000
+File:   mat1.txt, Determinant2:             0.000000
+
+File:   mat2.txt, Determinant1:             0.000000
+File:   mat2.txt, Determinant2:             0.000000
+
+File:   mat3.txt, Determinant1:             0.000000
+File:   mat3.txt, Determinant2:             0.000000
+
+File:   mat4.txt, Determinant1:             0.000000
+File:   mat4.txt, Determinant2:             0.000000
+
+File:      m.txt, Determinant1:             0.000000
+File:      m.txt, Determinant2:             0.000000
+
+File:     m1.txt, Determinant1:             0.000000
+File:     m1.txt, Determinant2:             0.000000
+
+File:     m2.txt, Determinant1:             0.000000
+File:     m2.txt, Determinant2:             0.000000
+
+File:     m3.txt, Determinant1:             0.000000
+File:     m3.txt, Determinant2:             0.000000
+
+File:     m4.txt, Determinant1:             0.000000
+File:     m4.txt, Determinant2:             0.000000
+
+File:     m5.txt, Determinant1:             0.000000
+File:     m5.txt, Determinant2:             0.000000
+
+File:     m6.txt, Determinant1:             0.000000
+File:     m6.txt, Determinant2:             0.000000
+
+File:     m7.txt, Determinant1:             0.000000
+File:     m7.txt, Determinant2:             0.000000
+
+File:     m8.txt, Determinant1:             0.000000
+File:     m8.txt, Determinant2:             0.000000
+
