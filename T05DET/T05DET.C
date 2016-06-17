@@ -105,7 +105,7 @@ void main( void )
   int i; 
   char *M[] = 
   { 
-  "mat1.txt", "mat2.txt", "mat3.txt", "mat4.txt"
+  "mat1.txt"
   }; 
 
   for (i = 0; i < N; i++) 
