@@ -5,28 +5,28 @@
 
 #include "anim.h"
 
-static VOID MM3_UNITInit( MM3UNIT *Uni, mm3ANIM *Ani )
+static VOID MM3_UNITInit( mm3UNIT *Uni, mm3ANIM *Ani )
 {
 } /* End of 'MM3UNITInit' function */
 
-static VOID MM3_UNITClose( MM3UNIT *Uni, mm3ANIM *Ani )
+static VOID MM3_UNITClose( mm3UNIT *Uni, mm3ANIM *Ani )
 {
 } /* End of 'MM3UNITClose' function */
 
-static VOID MM3_UNITResponse( MM3UNIT *Uni, mm3ANIM *Ani )
+static VOID MM3_UNITResponse( mm3UNIT *Uni, mm3ANIM *Ani )
 {
 } /* End of 'MM3UNITResponse' function */
 
-static VOID MM3_UNITRender( MM3UNIT *Uni, mm3ANIM *Ani )
+static VOID MM3_UNITRender( mm3UNIT *Uni, mm3ANIM *Ani )
 {
 } /* End of 'MM3UNITRender' function */
 
-MM3UNIT * MM3_UNITCreate( INT Size )
+mm3UNIT * MM3_UNITCreate( INT Size )
 {
-  MM3UNIT *Uni;
+  mm3UNIT *Uni;
 
   /* Memory allocation */
-  if (Size < sizeof(MM3UNIT) ||
+  if (Size < sizeof(mm3UNIT) ||
       (Uni = malloc(Size)) == NULL)
     return NULL;
   memset(Uni, 0, Size);

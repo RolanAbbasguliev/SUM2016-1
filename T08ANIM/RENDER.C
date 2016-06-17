@@ -47,12 +47,12 @@ VOID MM3_RndSetProj( VOID )
                                 -ratio_y * MM3_RndProjSize / 2,
                                  ratio_y * MM3_RndProjSize / 2,
                                  MM3_RndProjDist, MM3_RndFarClip);
-} /* End of 'MM3_RndSetProj' function */
+} /* End of 'VG4_RndSetProj' function */
 
 /* Object draw function.
  * ARGUMENTS:
  *   - object structure pointer:
- *       mm3OBJ *Obj;
+ *       vg4OBJ *Obj;
  * RETURNS: None.
  */
 VOID MM3_RndObjDraw( mm3OBJ *Obj )
@@ -69,7 +69,6 @@ VOID MM3_RndObjDraw( mm3OBJ *Obj )
     M = MatrMulMatr(MM3_RndMatrWorld,
       MatrMulMatr(MM3_RndMatrView, MM3_RndMatrProj));
     glLoadMatrixf(M.A[0]);
-    
     /*
     glBegin(GL_LINES);
       glColor3d(1, 0, 0);
@@ -112,7 +111,7 @@ VOID MM3_RndObjDraw( mm3OBJ *Obj )
         glUniform1f(loc, MM3_RndMaterials[mtl].Trans);
     }
 
-    /* Setup global variables */
+    /* Setup global variables */                                                 
     if ((loc = glGetUniformLocation(MM3_RndPrg, "MatrWVP")) != -1)
       glUniformMatrix4fv(loc, 1, FALSE, M.A[0]);
     if ((loc = glGetUniformLocation(MM3_RndPrg, "MatrWorld")) != -1)
@@ -135,12 +134,12 @@ VOID MM3_RndObjDraw( mm3OBJ *Obj )
     glUseProgram(0);
     MM3_RndMatrWorld = MSave;
   }
-} /* End of 'MM3_RndObjDraw' function */
+} /* End of 'VG4_RndObjDraw' function */
 
 /* Object free function.
  * ARGUMENTS:
  *   - object structure pointer:
- *       mm3OBJ *Obj;
+ *       vg4OBJ *Obj;
  * RETURNS: None.
  */
 VOID MM3_RndObjFree( mm3OBJ *Obj )
@@ -158,7 +157,7 @@ VOID MM3_RndObjFree( mm3OBJ *Obj )
   }
   free(Obj->Prims);
   memset(Obj, 0, sizeof(mm3OBJ));
-} /* End of 'MM3_RndObjFree' function */
+} /* End of 'VG4_RndObjFree' function */
 
 /* Material find by name function.
  * ARGUMENTS:
@@ -175,7 +174,7 @@ INT MM3_RndFindMaterial( CHAR *Name )
     if (strcmp(Name, MM3_RndMaterials[i].Name) == 0)  /* #include <string.h> */
       return i;
   return -1;
-} /* End of 'MM3_RndFindMaterial' function */
+} /* End of 'VG4_RndFindMaterial' function */
 
 /* Material load function.
  * ARGUMENTS:
@@ -231,7 +230,6 @@ VOID MM3_RndLoadMaterials( CHAR *FileName )
             first = y * M.TexW * M.TexNo + x,
             last = (M.TexH - 1 - y) * M.TexW * M.TexNo + x;
           BYTE tmp = Image[first];
-
           Image[first] = Image[last];
           Image[last] = tmp;
         }
@@ -249,6 +247,6 @@ VOID MM3_RndLoadMaterials( CHAR *FileName )
     MM3_RndMaterials[MM3_RndNumOfMaterials++] = M;
   }
   fclose(F);
-} /* End of 'MM3_RndLoadMaterials' function */
+} /* End of 'VG4_RndLoadMaterials' function */
 
 /* END OF 'RENDER.C' FILE */

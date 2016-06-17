@@ -12,7 +12,7 @@
 
 typedef struct
 {
-  MM3UNIT;
+  mm3UNIT;
   VEC Pos;
 } MM3UNIT_CONTROL;
 
@@ -41,7 +41,7 @@ static VOID MM3_UNITResponse( MM3UNIT_CONTROL *Uni, mm3ANIM *Ani )
   if (Ani->Keys['U'])
     glPolygonMode(GL_BACK, GL_LINE);
   if (Ani->Keys['C'])
-    MM3_AddUNIT(MM3_UNITCreateCube()); 
+    MM3_AnimAddUnit(MM3_UNITCreateCube()); 
   if (Ani->KeysClick[VK_ESCAPE])
     MM3_DoExit();
   if (Ani->KeysClick['P'])
@@ -100,7 +100,7 @@ static VOID MM3_UNITRender( MM3UNIT_CONTROL *Uni, mm3ANIM *Ani )
  * RETURNS:
  *   (MM3UNIT *) pointer to created UNIT.
  */
-MM3UNIT * MM3_UNITCreateControl( VOID )
+mm3UNIT * MM3_UNITCreateControl( VOID )
 {
   MM3UNIT_CONTROL *Uni;
 
@@ -109,7 +109,7 @@ MM3UNIT * MM3_UNITCreateControl( VOID )
   /* Setup UNIT methods */
   Uni->Init = (VOID *)MM3_UNITInit;
   Uni->Response = (VOID *)MM3_UNITResponse;
-  return (MM3UNIT *)Uni;
+  return (mm3UNIT *)Uni;
 } /* End of 'MM3_UNITCreateControl' function */
 
 

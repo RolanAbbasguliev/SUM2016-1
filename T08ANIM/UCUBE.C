@@ -11,7 +11,7 @@
 
 typedef struct
 {
-  MM3UNIT;
+  mm3UNIT;
   /*mm3PRIM Pr;*/
   mm3OBJ Pr;
   VEC Pos; /* Ball position */
@@ -68,7 +68,7 @@ static VOID MM3_UNITInit( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
   Uni->TimerShift = Rnd1() * 30;
   Uni->TimerSpeed = Rnd1() * 8;
 
-  MM3_RndObjLoad(&Uni->Pr, "modela\\UFO.g3d");
+  MM3_RndObjLoad(&Uni->Pr, "Kerrigan_infested\\Kerrigan_infested.g3d");
   /*MM3_RndPrimLoad(&Uni->Pr, "modela\\UFO.g3d");*/
 } /* End of 'MM3_UNITInit' function */
 
@@ -113,7 +113,7 @@ static VOID MM3_UNITRender( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
  * RETURNS:
  *   (MM3UNIT *) pointer to created UNIT.
  */
-MM3UNIT * MM3_UNITCreateCube( VOID )
+mm3UNIT * MM3_UNITCreateCube( VOID )
 {
   MM3UNIT_CUBE *Uni;
 
@@ -123,7 +123,7 @@ MM3UNIT * MM3_UNITCreateCube( VOID )
   Uni->Init = (VOID *)MM3_UNITInit;
   Uni->Render = (VOID *)MM3_UNITRender;
   Uni->Close = (VOID *)MM3_UNITClose;
-  return (MM3UNIT *)Uni;
+  return (mm3UNIT *)Uni;
 } /* End of 'MM3_UNITCreateCube' function */
 
 /* END OF 'UCUBE.C' FILE */

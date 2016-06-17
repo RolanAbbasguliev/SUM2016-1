@@ -47,7 +47,7 @@ BOOL MM3_IsSysInfo = 0, MM3_IsKeyInfo = 0;
  *       HWND hWnd;
  * RETURNS: None.
  */
-VOID MM3_Init( HWND hWnd )
+VOID MM3_AnimInit( HWND hWnd )
 {
   INT i;
   PIXELFORMATDESCRIPTOR pfd = {0};
@@ -94,7 +94,7 @@ VOID MM3_Init( HWND hWnd )
   MM3_Anim.hDC = CreateCompatibleDC(hDC);
 
   ReleaseDC(hWnd, hDC);
-  MM3_Anim.NumOfUNITs = 0;
+  MM3_Anim.NumOfUnits = 0;
   */
   /* Timer initialization */
   QueryPerformanceFrequency(&t);
@@ -117,19 +117,19 @@ VOID MM3_Init( HWND hWnd )
  *       mm3ANIM *Ani;
  * RETURNS: None.
  */
-VOID MM3_AddUNIT( MM3UNIT *Uni )
+VOID MM3_AnimAddUnit( mm3UNIT *Uni )
 {
-  if (MM3_Anim.NumOfUNITs >= MM3_MAX_UNITs)
+  if (MM3_Anim.NumOfUnits >= MM3_MAX_UNITS)
     return;
-  MM3_Anim.UNITs[MM3_Anim.NumOfUNITs++] = Uni;
+  MM3_Anim.Units[MM3_Anim.NumOfUnits++] = Uni;
   Uni->Init(Uni, &MM3_Anim);
-} /* End of 'MM3_AnimAddUNIT' function */
+} /* End of 'MM3_AnimAddUnit' function */
 
 /* Animation system deinitialization function.
  * ARGUMENTS: None;
  * RETURNS: None.
  */
-VOID MM3_Close( VOID )
+VOID MM3_AnimClose( VOID )
 {
   /* Delete rendering context */
   wglMakeCurrent(NULL, NULL);
@@ -139,12 +139,12 @@ VOID MM3_Close( VOID )
   ReleaseDC(MM3_Anim.hWnd, MM3_Anim.hDC);
   /*int i;
 
-  for (i = 0; i < MM3_Anim.NumOfUNITs; i++)
+  for (i = 0; i < MM3_Anim.NumOfUnits; i++)
   {
     MM3_Anim.UNITs[i]->Close(MM3_Anim.UNITs[i], &MM3_Anim);
     free(MM3_Anim.UNITs[i]);
   }
-  MM3_Anim.NumOfUNITs = 0;
+  MM3_Anim.NumOfUnits = 0;
 
   DeleteObject(MM3_Anim.hFrame);
   DeleteDC(MM3_Anim.hDC);*/
@@ -157,7 +157,7 @@ VOID MM3_Close( VOID )
  *       INT W, H;
  * RETURNS: None.
  */
-VOID MM3_Resize( INT w, INT h )
+VOID MM3_AnimResize( INT w, INT h )
 {
   HDC hDC;
 
@@ -183,7 +183,7 @@ VOID MM3_Resize( INT w, INT h )
  *       HWND hWnd;
  * RETURNS: None.
  */
-VOID MM3_CopyFrame( HDC hDC )
+VOID MM3_AnimCopyFrame( HDC hDC )
 {
   SwapBuffers(MM3_Anim.hDC);
   /*BitBlt(hDC, 0, 0, MM3_Anim.W, MM3_Anim.H, MM3_Anim.hDC, 0, 0, SRCCOPY);*/
@@ -193,7 +193,7 @@ VOID MM3_CopyFrame( HDC hDC )
  * ARGUMENTS: None;
  * RETURNS: None.
  */
-VOID MM3_Render( VOID )
+VOID MM3_AnimRender( VOID )
 {   
   int i;
   CHAR StrBuf[200];
@@ -287,8 +287,8 @@ VOID MM3_Render( VOID )
   /*MM3_MatrView = MatrixTranslate(MM3_Anim.JX, MM3_Anim.JY, MM3_Anim.JZ);*/
 
   /*** Send response to all UNITs ***/
-  for (i = 0; i < MM3_Anim.NumOfUNITs; i++)
-    MM3_Anim.UNITs[i]->Response(MM3_Anim.UNITs[i], &MM3_Anim);
+  for (i = 0; i < MM3_Anim.NumOfUnits; i++)
+    MM3_Anim.Units[i]->Response(MM3_Anim.Units[i], &MM3_Anim);
 
   /*** Clear frame ***/
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -305,12 +305,12 @@ VOID MM3_Render( VOID )
   SelectObject(MM3_Anim.hDC, hBr);
   */
   /*** Render all UNIT ***/
-  for (i = 0; i < MM3_Anim.NumOfUNITs; i++)
+  for (i = 0; i < MM3_Anim.NumOfUnits; i++)
   {
     MM3_RndMatrWorld = MatrIdentity();
-    MM3_Anim.UNITs[i]->Render(MM3_Anim.UNITs[i], &MM3_Anim);
+    MM3_Anim.Units[i]->Render(MM3_Anim.Units[i], &MM3_Anim);
   }
-  /*for (i = 0; i < MM3_Anim.NumOfUNITs; i++)
+  /*for (i = 0; i < MM3_Anim.NumOfUnits; i++)
   {
     SelectObject(MM3_Anim.hDC, GetStockObject(DC_PEN));
     SelectObject(MM3_Anim.hDC, GetStockObject(DC_BRUSH));
@@ -353,4 +353,11 @@ VOID MM3_DoExit( VOID )
   DestroyWindow(MM3_Anim.hWnd);
 } /* End of 'MM3_AnimClose' function */
 
-/* END OF 'ANIM.C' FILE */
+/* END OF 'ANIM.C' FILE 
+VOID MM3_AnimCopyFrame( HDC hDC );
+VOID MM3_AnimUnit( HWND hWnd );
+VOID MM3_AnimAddUnit( mm3UNIT *Uni );
+VOID MM3_AnimClose( VOID );
+VOID IK3_Reasize( INT W, INT H );
+VOID MM3_AnimRender( VOID );
+VOID MM3_AnimDoExit( VOID );*/

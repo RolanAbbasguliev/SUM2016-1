@@ -7,10 +7,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "render.h"
-#include "vec.h"
-
 #include "anim.h"
+#include "render.h"
 
 /* Load object from '*.g3d' file function.
  * ARGUMENTS:

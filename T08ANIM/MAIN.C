@@ -100,7 +100,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   UpdateWindow(hWnd);
  
   /*MM3_AddUNIT(MM3_UNITCreateCube());*/
-  MM3_AddUNIT(MM3_UNITCreateControl());
+  MM3_AnimAddUnit(MM3_UNITCreateControl());
   
   /* Run message loop */
   while (GetMessage(&msg, NULL, 0, 0))
@@ -120,10 +120,10 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
   {
   case WM_CREATE:
     SetTimer(hWnd, 30, 10, NULL);
-    MM3_Init(hWnd);
+    MM3_AnimInit(hWnd);
     return 0;
   case WM_SIZE:
-    MM3_Resize(LOWORD(lParam), HIWORD(lParam));
+    MM3_AnimResize(LOWORD(lParam), HIWORD(lParam));
     SendMessage(hWnd, WM_TIMER, 0, 0);
     return 0;
   case WM_KEYDOWN:
@@ -133,18 +133,18 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
       SendMessage(hWnd, WM_DESTROY, 0, 0);
     return 0;
   case WM_TIMER:
-    MM3_Render();
+    MM3_AnimRender();
     /*InvalidateRect(hWnd, NULL, FALSE);*/  
     InvalidateRect(hWnd, NULL, FALSE);
     return 0;
   case WM_PAINT:
     hDC = BeginPaint(hWnd, &ps);
     /* Animation copy frame */
-    MM3_CopyFrame(hDC);
+    MM3_AnimCopyFrame(hDC);
     EndPaint(hWnd, &ps);
     return 0;
   case WM_DESTROY:
-    MM3_Close();
+    MM3_AnimClose();
     MM3_DoExit();
     PostQuitMessage(0);
     return 0;
