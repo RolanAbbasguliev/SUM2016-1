@@ -57,6 +57,7 @@ VOID MM3_DoExit( VOID );
 MM3UNIT * MM3_UNITCreate( INT Size );
 
 extern mm3ANIM MM3_Anim;
+extern INT MM3_MouseWheel;
 
 #endif
 

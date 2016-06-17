@@ -100,6 +100,7 @@ INT WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance,
   UpdateWindow(hWnd);
  
   MM3_AddUNIT(MM3_UNITCreateCube());
+  MM3_AddUNIT(MM3_UNITCreateControl());
 
   /* Run message loop */
   while (GetMessage(&msg, NULL, 0, 0))
@@ -151,6 +152,9 @@ LRESULT CALLBACK MyWinFunc( HWND hWnd, UINT Msg, WPARAM wParam, LPARAM lParam )
     PostQuitMessage(0);
     return 0;
   case WM_ERASEBKGND:
+    return 0;
+  case WM_MOUSEWHEEL:
+    MM3_MouseWheel += (SHORT)HIWORD(wParam);
     return 0;
   }
   return DefWindowProc(hWnd, Msg, wParam, lParam);

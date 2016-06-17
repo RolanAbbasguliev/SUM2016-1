@@ -52,9 +52,9 @@ mm3PRIM Cube =
 /* UNIT cube initialization function.
  * ARGUMENTS:
  *   - self-pointer to UNIT object:
- *       vg4UNIT_CUBE *Uni;
+ *       mm3UNIT_CUBE *Uni;
  *   - animation context:
- *       vg4ANIM *Ani;
+ *       mm3ANIM *Ani;
  * RETURNS: None.
  */
 static VOID MM3_UNITInit( MM3UNIT_CUBE *Uni, mm3ANIM *Ani )
